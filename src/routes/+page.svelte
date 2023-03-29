@@ -1,7 +1,11 @@
 <script lang="ts">
+	import { applyAction, deserialize, enhance, type SubmitFunction } from '$app/forms';
 	import { messageStore } from '@store/messageStore';
 	import MarkdownIt from 'markdown-it';
 	import { writable } from 'svelte/store';
+	import toast, { Toaster } from 'svelte-french-toast';
+	import type { ActionResult } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
 
 	const md = new MarkdownIt();
 
@@ -9,14 +13,17 @@
 	let query = writable('');
 
 	//handle form submission
-	async function handleSubmit() {
-		if (!query) {
-			alert('Please input a question');
+	const handleSubmit: SubmitFunction = async ({ action, cancel }) => {
+		// if no user input, dont call server and return
+		if (!$query) {
+			toast.error('Please input a question.');
+			cancel();
 			return;
 		}
 
 		const question = $query.trim();
 
+		// update store with users query
 		messageStore.update((state) => ({
 			...state,
 			messages: [
@@ -25,18 +32,48 @@
 					type: 'userMessage',
 					message: question
 				}
-			],
-			pending: undefined
+			]
 		}));
-
 		loading.set(true);
-		query.set('');
-		messageStore.update((state) => ({ ...state, pending: '' }));
 
-		const ctrl = new AbortController();
-	}
+		const data = new FormData();
+		data.append('query', question);
+		data.append('history', JSON.stringify($messageStore.history));
+
+		const response = await fetch(action, {
+			method: 'POST',
+			body: data
+		});
+
+		const result: ActionResult = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			// re-run all `load` functions, following the successful update
+			toast.success('Received Request');
+
+			// Update store with KI generated response
+			messageStore.update((state) => ({
+				history: [...state.history, [question, '']],
+				messages: [
+					...state.messages,
+					{
+						type: 'apiMessage',
+						message: JSON.parse(JSON.stringify(result.data))
+					}
+				],
+				pending: undefined,
+				pendingSourceDocs: undefined
+			}));
+			await invalidateAll();
+		} else {
+			toast.error('Something went wrong!');
+		}
+
+		applyAction(result);
+	};
 </script>
 
+<Toaster />
 <div class="mx-auto flex flex-col gap-4">
 	<!-- Überschrift -->
 	<h1 class="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Analyze your PDF</h1>
@@ -44,12 +81,12 @@
 	<main class="main">
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
-			<div class="messagelist">
+			<div class="w-full h-full overflow-y-scroll rounded-lg shadow-md">
 				{#each $messageStore.messages as { message, type }, i}
 					<div
 						class={type === 'apiMessage'
 							? 'flex items-center p-3 bg-gray-100'
-							: 'flex items-center p-3'}
+							: 'flex items-center p-3 bg-blue-100'}
 					>
 						{#if type === 'apiMessage'}
 							<img class="w-8 h-8 mr-4" src="bot-image.png" alt="bot-icon" />
@@ -57,7 +94,6 @@
 								{@html md.render(message)}
 							</div>
 						{:else}
-							<!-- <img src="favicon.png" alt="Me" class="w-8 h-8 mr-3" /> -->
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -85,7 +121,7 @@
 		<!-- User Input -->
 		<div class="center">
 			<div class="relative">
-				<form method="POST">
+				<form method="POST" use:enhance={handleSubmit}>
 					<textarea
 						disabled={$loading}
 						bind:value={$query}
@@ -93,20 +129,18 @@
 						maxLength={512}
 						id="userInput"
 						name="userInput"
-						placeholder={$loading ? 'Waiting for response...' : 'What is this legal case about?'}
+						placeholder={$loading ? 'Waiting for response...' : 'What is this pdf about?'}
+						class="relative w-[75vw] border border-gray-200 rounded-lg outline-none text-lg px-8 py-4"
 						on:keydown={(event) => {
 							if (event.key === 'Enter' && !event.shiftKey) {
 								event.preventDefault();
-								handleSubmit();
+								document.getElementById('formbutton')?.click();
+							} else if (event.key === 'Enter') {
+								event.preventDefault();
 							}
 						}}
-						class="relative w-[75vw] border border-gray-200 rounded-lg outline-none text-lg px-8 py-4"
 					/>
-					<button
-						disabled={$loading}
-						class="generatebutton"
-						on:click|preventDefault={() => handleSubmit()}
-					>
+					<button id="formbutton" disabled={$loading} class="generatebutton">
 						{#if $loading}
 							...
 						{:else}
@@ -168,13 +202,6 @@
 		opacity: 0.9;
 		cursor: not-allowed;
 		background: none;
-	}
-
-	.messagelist {
-		width: 100%;
-		height: 100%;
-		overflow-y: scroll;
-		border-radius: 0.5rem;
 	}
 
 	.messagelistloading {
