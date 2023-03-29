@@ -33,8 +33,10 @@
 	"type": "module",
 	"dependencies": {
 		"@pinecone-database/pinecone": "^0.0.10",
+		"@types/markdown-it": "^12.2.3",
 		"dotenv": "^16.0.3",
 		"langchain": "^0.0.42",
+		"markdown-it": "^13.0.1",
 		"pdf-parse": "^1.1.1"
 	}
 }
