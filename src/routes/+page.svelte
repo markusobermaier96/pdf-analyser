@@ -23,21 +23,10 @@
 
 		const question = $query.trim();
 
-		// update store with users query
-		messageStore.update((state) => ({
-			...state,
-			messages: [
-				...state.messages,
-				{
-					type: 'userMessage',
-					message: question
-				}
-			]
-		}));
 		loading.set(true);
 
 		const data = new FormData();
-		data.append('query', question);
+		data.append('question', question);
 		data.append('history', JSON.stringify($messageStore.history));
 
 		const response = await fetch(action, {
@@ -46,10 +35,38 @@
 		});
 
 		const result: ActionResult = deserialize(await response.text());
-
+		console.log(result);
 		if (result.type === 'success') {
 			// re-run all `load` functions, following the successful update
-			toast.success('Received Request');
+			if (result.data == undefined) {
+				toast.error('Couldnt generate response. Maybe your API keys are invalid');
+				// update store with users query on error
+				messageStore.update((state) => ({
+					...state,
+					messages: [
+						...state.messages,
+						{
+							type: 'userMessage',
+							message: question,
+							err: true
+						}
+					],
+					err: true
+				}));
+				loading.set(false);
+				return;
+			}
+			// update store with users query on success
+			messageStore.update((state) => ({
+				...state,
+				messages: [
+					...state.messages,
+					{
+						type: 'userMessage',
+						message: question
+					}
+				]
+			}));
 
 			// Update store with KI generated response
 			messageStore.update((state) => ({
@@ -60,13 +77,11 @@
 						type: 'apiMessage',
 						message: JSON.parse(JSON.stringify(result.data))
 					}
-				],
-				pending: undefined,
-				pendingSourceDocs: undefined
+				]
 			}));
 			await invalidateAll();
 		} else {
-			toast.error('Something went wrong!');
+			toast.error('A network error occured!');
 		}
 
 		applyAction(result);
@@ -82,11 +97,12 @@
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
 			<div class="w-full h-full overflow-y-scroll rounded-lg shadow-md">
-				{#each $messageStore.messages as { message, type }, i}
+				{#each $messageStore.messages as { message, type, err }, i}
 					<div
 						class={type === 'apiMessage'
 							? 'flex items-center p-3 bg-gray-100'
-							: 'flex items-center p-3 bg-blue-100'}
+							: 'flex items-center p-3'}
+						style:color={err ? 'red' : 'black'}
 					>
 						{#if type === 'apiMessage'}
 							<img class="w-8 h-8 mr-4" src="bot-image.png" alt="bot-icon" />

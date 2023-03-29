@@ -4,6 +4,7 @@ interface MessageStore {
   messages: {
     message: string;
     type: 'apiMessage' | 'userMessage';
+    err?: boolean;
   }[];
   history: [string, string][];
 }
