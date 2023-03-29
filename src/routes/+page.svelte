@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { applyAction, deserialize, enhance, type SubmitFunction } from '$app/forms';
-	import { messageStore } from '@store/messageStore';
+	import { messageStore } from '@lib/store/messageStore';
 	import MarkdownIt from 'markdown-it';
 	import { writable } from 'svelte/store';
 	import toast, { Toaster } from 'svelte-french-toast';
