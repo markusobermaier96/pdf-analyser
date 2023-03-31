@@ -57,5 +57,3 @@ export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: st
 		k: 2 //number of source documents to return
 	});
 };
-
-  
