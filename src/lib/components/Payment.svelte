@@ -1,14 +1,23 @@
 <script lang="ts">
-	let cryptoType: string;
 	let amount: number;
 	let walletAddress: string;
+	let cryptoType: string;
 
 	function submitPayment() {
-		console.log('check');
-	}
+        console.log("chekc")
+    }
 </script>
 
-<form on:submit|preventDefault={submitPayment}>
+<input type="checkbox" id="my-modal-3" class="modal-toggle" />
+<div class="modal">
+  <div class="modal-box relative">
+    <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+    <h3 class="text-lg font-bold">Congratulations random Internet user!</h3>
+    <p class="py-4">You've been selected for a chance to get one year of subscription to use Wikipedia for free!</p>
+  </div>
+</div>
+
+<!-- <form on:submit|preventDefault={submitPayment}>
 	<label>
 		Cryptocurrency type:
 		<select bind:value={cryptoType}>
@@ -26,4 +35,4 @@
 		<input type="text" bind:value={walletAddress} />
 	</label>
 	<button type="submit">Pay</button>
-</form>
+</form> -->
