@@ -1,146 +1,125 @@
 <script lang="ts">
-	import { applyAction, deserialize, enhance, type SubmitFunction } from '$app/forms';
-	import { messageStore } from '@lib/store/messageStore';
-	import MarkdownIt from 'markdown-it';
+	import type { ChatCompletionRequestMessage } from 'openai';
 	import { writable } from 'svelte/store';
 	import toast, { Toaster } from 'svelte-french-toast';
-	import type { ActionResult } from '@sveltejs/kit';
-	import { invalidateAll } from '$app/navigation';
-
-	const md = new MarkdownIt();
+	import { SSE } from 'sse.js';
+	import ChatMessage from '@lib/components/ChatMessage.svelte';
 
 	let loading = writable(false);
-	let query = writable('');
+	let query = '';
+	let chatMessages: ChatCompletionRequestMessage[] = [];
+	let answer = '';
 
-	//handle form submission
-	const handleSubmit: SubmitFunction = async ({ action, cancel }) => {
+	let scrollToDiv: HTMLDivElement;
+	function scrollToBottom() {
+		setTimeout(function () {
+			scrollToDiv.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+		}, 100);
+	}
+
+	function handleError<T>(err: T) {
+		loading.set(false);
+		query = '';
+		console.error(err);
+		toast.error('nope');
+	}
+
+	// handle form submission
+	const handleSubmit = async () => {
 		// if no user input, dont call server and return
-		if (!$query) {
+
+		query = query.trim().replaceAll('\n', ' ');
+
+		if (!query) {
 			toast.error('Please input a question.');
-			cancel();
 			return;
 		}
 
-		const question = $query.trim();
+		chatMessages = [...chatMessages, { role: 'user', content: query }];
+
+		// store user question
+		/* messageStore.update((state) => ({
+			...state,
+			messages: [
+				...state.messages,
+				{
+					type: 'userMessage',
+					message: question
+				}
+			]
+		})); */
+
+		//const question = $query.trim();
 
 		loading.set(true);
 
-		const data = new FormData();
-		data.append('question', question);
-		data.append('history', JSON.stringify($messageStore.history));
+		// add history to action call
+		//data('history', JSON.stringify($messageStore.history));
 
-		const response = await fetch(action, {
-			method: 'POST',
-			body: data
+		const eventSource = new SSE('/api/chat', {
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			payload: JSON.stringify({ messages: chatMessages })
 		});
+		eventSource.addEventListener('error', handleError);
 
-		const result: ActionResult = deserialize(await response.text());
-		console.log(result);
-		if (result.type === 'success') {
-			// re-run all `load` functions, following the successful update
-			if (result.data == undefined) {
-				toast.error('Couldnt generate response. Maybe your API keys are invalid');
-				// update store with users query on error
-				messageStore.update((state) => ({
-					...state,
-					messages: [
-						...state.messages,
-						{
-							type: 'userMessage',
-							message: question,
-							err: true
-						}
-					],
-					err: true
-				}));
+		eventSource.addEventListener('message', (e) => {
+			scrollToBottom();
+			try {
+				console.log(e.data);
+				/* if (e.data.text === '') {
+					loading.set(false);
+					chatMessages = [...chatMessages, { role: 'assistant', content: answer }];
+					answer = '';
+					return;
+				} */
+
+				const completionResponse = JSON.parse(e.data);
+				chatMessages = [...chatMessages, { role: 'assistant', content: completionResponse.text }];
 				loading.set(false);
-				return;
+				/* const [{ delta }] = completionResponse.choices;
+
+				console.log(completionResponse);
+				if (delta.content) {
+					answer = (answer ?? '') + delta.content;
+				} */
+			} catch (err) {
+				handleError(err);
 			}
-			// update store with users query on success
-			messageStore.update((state) => ({
-				...state,
-				messages: [
-					...state.messages,
-					{
-						type: 'userMessage',
-						message: question
-					}
-				]
-			}));
-
-			// Update store with KI generated response
-			messageStore.update((state) => ({
-				history: [...state.history, [question, '']],
-				messages: [
-					...state.messages,
-					{
-						type: 'apiMessage',
-						message: JSON.parse(JSON.stringify(result.data))
-					}
-				]
-			}));
-			await invalidateAll();
-		} else {
-			toast.error('A network error occured!');
-		}
-
-		applyAction(result);
+		});
+		eventSource.stream();
+		scrollToBottom();
 	};
 </script>
 
 <Toaster />
 <div class="mx-auto flex flex-col gap-4">
-	<!-- Überschrift -->
+	<!-- Header -->
 	<h1 class="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Analyze your PDF</h1>
 
 	<main class="main">
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
 			<div class="w-full h-full overflow-y-scroll rounded-lg shadow-md">
-				{#each $messageStore.messages as { message, type, err }, i}
-					<div
-						class={type === 'apiMessage'
-							? 'flex items-center p-3 bg-gray-100'
-							: 'flex items-center p-3'}
-						style:color={err ? 'red' : 'black'}
-					>
-						{#if type === 'apiMessage'}
-							<img class="w-8 h-8 mr-4" src="bot-image.png" alt="bot-icon" />
-							<div>
-								{@html md.render(message)}
-							</div>
-						{:else}
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="w-8 h-8 mr-4"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-								/>
-							</svg>
-
-							<div class={$loading && i === $messageStore.messages.length - 1 ? 'flex' : 'flex'}>
-								{@html md.render(message)}
-							</div>
-						{/if}
-					</div>
+				<ChatMessage
+					role="assistant"
+					content="Hello, what would you like to know about the document?"
+				/>
+				{#each chatMessages as { role, content }, i}
+					<ChatMessage {role} {content} />
 				{/each}
+				<div class="" bind:this={scrollToDiv} />
 			</div>
 		</div>
 
 		<!-- User Input -->
 		<div class="center">
 			<div class="relative">
-				<form method="POST" use:enhance={handleSubmit}>
+				<form method="POST" on:submit|preventDefault={handleSubmit}>
 					<textarea
 						disabled={$loading}
-						bind:value={$query}
+						bind:value={query}
 						rows={1}
 						maxLength={512}
 						id="userInput"

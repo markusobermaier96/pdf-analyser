@@ -14,10 +14,12 @@ specifiers:
   eslint-plugin-svelte3: ^4.0.0
   langchain: ^0.0.42
   markdown-it: ^13.0.1
+  openai: ^3.2.1
   pdf-parse: ^1.1.1
   postcss: ^8.4.21
   prettier: ^2.8.0
   prettier-plugin-svelte: ^2.8.1
+  sse.js: ^0.6.1
   svelte: ^3.54.0
   svelte-check: ^3.0.1
   svelte-french-toast: 1.0.4-beta.0
@@ -32,7 +34,9 @@ dependencies:
   dotenv: 16.0.3
   langchain: 0.0.42_gmj7kmepz6e4hbef53kmpddf3a
   markdown-it: 13.0.1
+  openai: 3.2.1
   pdf-parse: 1.1.1
+  sse.js: 0.6.1
   svelte-french-toast: 1.0.4-beta.0_svelte@3.57.0
 
 devDependencies:
@@ -1986,6 +1990,10 @@ packages:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /sse.js/0.6.1:
+    resolution: {integrity: sha512-peXG6GnWqF5hnubhMw0WfB6rqQy7z7LaMBT067vqgQwC3gKz8JGFzexBSV80FqZ9JoUDwo3Xt5nxkrGrgbPrtA==}
+    dev: false
 
   /streamsearch/1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
