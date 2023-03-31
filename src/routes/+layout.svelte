@@ -27,6 +27,9 @@
 					{/each}
 				</ul>
 			</nav-left>
+			<brand-name class="text-2xl font-bold font-serif absolute left-1/2 transform -translate-x-1/2"
+				>PDF Analyser</brand-name
+			>
 			<nav-right class="self-center flex justify-end w-full mr-4">
 				<div class="">PDF</div>
 			</nav-right>

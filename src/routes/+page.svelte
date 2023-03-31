@@ -37,24 +37,7 @@
 
 		chatMessages = [...chatMessages, { role: 'user', content: query }];
 
-		// store user question
-		/* messageStore.update((state) => ({
-			...state,
-			messages: [
-				...state.messages,
-				{
-					type: 'userMessage',
-					message: question
-				}
-			]
-		})); */
-
-		//const question = $query.trim();
-
 		loading.set(true);
-
-		// add history to action call
-		//data('history', JSON.stringify($messageStore.history));
 
 		const eventSource = new SSE('/api/chat', {
 			headers: {
@@ -84,6 +67,7 @@
 				if (delta.content) {
 					answer = (answer ?? '') + delta.content;
 				} */
+				return;
 			} catch (err) {
 				handleError(err);
 			}
@@ -96,8 +80,8 @@
 <Toaster />
 <div class="mx-auto flex flex-col gap-4">
 	<!-- Header -->
-	<h1 class="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Analyze your PDF</h1>
-
+	<!-- 	<h1 class="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Analyze your PDF</h1>
+ -->
 	<main class="main">
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
