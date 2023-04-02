@@ -1,13 +1,27 @@
 <script lang="ts">
 	import MarkdownIt from 'markdown-it';
 	import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-	const md = new MarkdownIt();
+	const md = new MarkdownIt({
+		linkify: true
+	});
+
+	md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+		const aToken = tokens[idx];
+		const hrefIndex = aToken.attrIndex('href');
+		if (hrefIndex >= 0) {
+			aToken.attrPush(['class', `text-blue-500 after:content-['🔗']`]);
+			aToken.attrPush(['target', '_blank']);
+		}
+		return self.renderToken(tokens, idx, options);
+	};
 
 	export let role: ChatCompletionRequestMessageRoleEnum;
 	export let content: string;
 </script>
 
-<div class={role === 'user' ? 'flex items-center p-3' : 'flex items-center p-3 bg-gray-100'}>
+<div
+	class="flex items-center p-3 border-b m-2 shadow-lg {role === 'assistant' ? 'bg-gray-100' : ''}"
+>
 	{#if role === 'user'}
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

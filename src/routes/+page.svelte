@@ -75,6 +75,8 @@
 		eventSource.stream();
 		scrollToBottom();
 	};
+
+	export let isMetamaskInstalled: boolean;
 </script>
 
 <Toaster />
@@ -90,6 +92,12 @@
 					role="assistant"
 					content="Hello, what would you like to know about the document?"
 				/>
+				<!-- {#if !isMetamaskInstalled}
+					<ChatMessage
+						role="assistant"
+						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
+					/>
+				{/if} -->
 				{#each chatMessages as { role, content }, i}
 					<ChatMessage {role} {content} />
 				{/each}

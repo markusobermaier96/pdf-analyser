@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@metamask/detect-provider": "^2.0.0",
 		"@pinecone-database/pinecone": "^0.0.10",
 		"@types/markdown-it": "^12.2.3",
 		"daisyui": "^2.51.5",

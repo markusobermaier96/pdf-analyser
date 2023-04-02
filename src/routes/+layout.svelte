@@ -1,7 +1,11 @@
 <script>
+	import AttachWallet from '@lib/components/AttachWallet.svelte';
 	import FileUpload from '@lib/components/FileUpload.svelte';
 	import Payment from '@lib/components/Payment.svelte';
 	import '../app.css';
+	import detectEthereumProvider from '@metamask/detect-provider';
+	import { onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	const navigation = [
 		{
@@ -13,9 +17,24 @@
 			href: '/#'
 		}
 	];
+
+	let isMetamaskInstalled = writable(false);
+	async function checkMetamaskInstalled() {
+		await detectEthereumProvider().then((val) => {
+			isMetamaskInstalled.set(!!val?.isMetaMask ?? false);
+		});
+	}
+
+	onMount(checkMetamaskInstalled);
+	export let data;
 </script>
 
-<Payment />
+{#if data.user}
+	<Payment />
+{:else}
+	<FileUpload />
+	<AttachWallet />
+{/if}
 <FileUpload />
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header class="">
@@ -36,24 +55,29 @@
 				>PDF Analyser</brand-name
 			>
 			<nav-right class="self-center flex justify-end w-full mr-4 space-x-12">
-				<label
-					for="file-upload"
-					class="rounded-lg border p-2 border-gray-300 hover:border-gray-500 self-center"
+				<label for="file-upload" class="btn {!$isMetamaskInstalled ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				<label
-					for="my-modal-3"
-					class="rounded-lg border p-2 border-gray-300 hover:border-gray-500 self-center"
-					>Pay with Crypto</label
-				>
+				{#if data.user}
+					<label for="my-modal-3" class="btn">Pay with Crypto</label>
+				{:else}
+					<label
+						for="wallet"
+						class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
+						>Attach Wallet</label
+					>
+				{/if}
 			</nav-right>
 		</div>
 	</header>
 
 	<main class="flex w-full flex-1 flex-col overflow-hidden">
-		<slot />
+		<slot isMetamaskInstalled={$isMetamaskInstalled} />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
 		<div>Powered by LangChainAI.</div>
 	</footer>
 </div>
+
+<style lang="postcss">
+</style>

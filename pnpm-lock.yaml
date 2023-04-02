@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@metamask/detect-provider': ^2.0.0
   '@pinecone-database/pinecone': ^0.0.10
   '@sveltejs/adapter-auto': ^2.0.0
   '@sveltejs/kit': ^1.5.0
@@ -33,6 +34,7 @@ specifiers:
   vite: ^4.2.0
 
 dependencies:
+  '@metamask/detect-provider': 2.0.0
   '@pinecone-database/pinecone': 0.0.10
   '@types/markdown-it': 12.2.3
   daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
@@ -338,6 +340,11 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@metamask/detect-provider/2.0.0:
+    resolution: {integrity: sha512-sFpN+TX13E9fdBDh9lvQeZdJn4qYoRb/6QF2oZZK/Pn559IhCFacPMU1rMuqyXoFQF3JSJfii2l98B87QDPeCQ==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
