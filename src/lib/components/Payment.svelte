@@ -8,7 +8,7 @@
 	}
 </script>
 
-<input type="checkbox" id="my-modal-3" class="modal-toggle" />
+<input type="checkbox" id="pay" class="modal-toggle" />
 <div class="modal">
 	<div class="modal-box relative flex flex-col justify-center items-center">
 		<form class="flex flex-col space-y-8" on:submit|preventDefault={() => submitPayment()}>
@@ -26,6 +26,6 @@
 			</label>
 			<button type="submit">Pay</button>
 		</form>
-		<label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+		<label for="pay" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
 	</div>
 </div>

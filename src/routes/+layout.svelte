@@ -1,11 +1,13 @@
-<script>
-	import AttachWallet from '@lib/components/AttachWallet.svelte';
+<script lang="ts">
 	import FileUpload from '@lib/components/FileUpload.svelte';
 	import Payment from '@lib/components/Payment.svelte';
 	import '../app.css';
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
+	import { isMetamaskInstalled } from '@lib/store/globalStore';
 	import { writable } from 'svelte/store';
+
+	let metamaskPending = writable(false);
 
 	const navigation = [
 		{
@@ -14,27 +16,35 @@
 		},
 		{
 			name: 'About',
-			href: '/#'
+			href: '/about'
 		}
 	];
 
-	let isMetamaskInstalled = writable(false);
 	async function checkMetamaskInstalled() {
 		await detectEthereumProvider().then((val) => {
-			isMetamaskInstalled.set(!!val?.isMetaMask ?? false);
+			isMetamaskInstalled.set(!!val?.isMetaMask);
 		});
 	}
+
+	const connectToMetamask = async () => {
+		metamaskPending.set(true);
+		try {
+			// Request access to the user's MetaMask accounts
+			const account = await ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => {
+				return accounts[0];
+			});
+		} catch (error) {
+			console.error(error);
+		} finally {
+			metamaskPending.set(false);
+		}
+	};
 
 	onMount(checkMetamaskInstalled);
 	export let data;
 </script>
 
-{#if data.user}
-	<Payment />
-{:else}
-	<FileUpload />
-	<AttachWallet />
-{/if}
+<Payment />
 <FileUpload />
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header class="">
@@ -58,21 +68,23 @@
 				<label for="file-upload" class="btn {!$isMetamaskInstalled ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				{#if data.user}
-					<label for="my-modal-3" class="btn">Pay with Crypto</label>
-				{:else}
-					<label
-						for="wallet"
-						class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
-						>Attach Wallet</label
-					>
-				{/if}
+				<!-- TODO: Add this when user is authenticated -->
+				<!-- <label for="pay" class="btn">Pay with Crypto</label> -->
+
+				<button
+					on:click={connectToMetamask}
+					disabled={$metamaskPending}
+					class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
+					>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
+				>
 			</nav-right>
 		</div>
 	</header>
 
 	<main class="flex w-full flex-1 flex-col overflow-hidden">
-		<slot isMetamaskInstalled={$isMetamaskInstalled} />
+		{#if $isMetamaskInstalled !== undefined}
+			<slot />
+		{/if}
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
 		<div>Powered by LangChainAI.</div>

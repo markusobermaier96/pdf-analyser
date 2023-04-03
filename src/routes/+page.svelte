@@ -4,6 +4,7 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
+	import { isMetamaskInstalled } from '@lib/store/globalStore';
 
 	let loading = writable(false);
 	let query = '';
@@ -20,8 +21,7 @@
 	function handleError<T>(err: T) {
 		loading.set(false);
 		query = '';
-		console.error(err);
-		toast.error('nope');
+		toast.error(err.data);
 	}
 
 	// handle form submission
@@ -75,15 +75,10 @@
 		eventSource.stream();
 		scrollToBottom();
 	};
-
-	export let isMetamaskInstalled: boolean;
 </script>
 
 <Toaster />
 <div class="mx-auto flex flex-col gap-4">
-	<!-- Header -->
-	<!-- 	<h1 class="text-2xl font-bold leading-[1.1] tracking-tighter text-center">Analyze your PDF</h1>
- -->
 	<main class="main">
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
@@ -92,12 +87,12 @@
 					role="assistant"
 					content="Hello, what would you like to know about the document?"
 				/>
-				<!-- {#if !isMetamaskInstalled}
+				{#if !$isMetamaskInstalled}
 					<ChatMessage
 						role="assistant"
 						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
 					/>
-				{/if} -->
+				{/if}
 				{#each chatMessages as { role, content }, i}
 					<ChatMessage {role} {content} />
 				{/each}
