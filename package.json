@@ -40,6 +40,7 @@
 		"@types/markdown-it": "^12.2.3",
 		"daisyui": "^2.51.5",
 		"dotenv": "^16.0.3",
+		"ethers": "^6.2.3",
 		"formdata-node": "^5.0.0",
 		"fs": "0.0.1-security",
 		"langchain": "^0.0.42",

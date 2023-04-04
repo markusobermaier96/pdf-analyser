@@ -3,8 +3,8 @@ import { promises as fs } from 'fs';
 
 export const actions: Actions = {
   upload: async ({ cookies, request }) => {
-    const data = await request.formData();
-    const fileField = data.get('pdf'); // value of 'name' attribute of input
+    const fileField = await request.formData().then((data) => {return data.get('pdf')});
+    //const fileField = data.get('pdf'); // value of 'name' attribute of input
     if (!fileField || !(fileField instanceof File)) {
       return "error";
     }
