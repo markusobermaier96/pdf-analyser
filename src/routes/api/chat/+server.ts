@@ -15,12 +15,12 @@ export const POST = async ({ request }) => {
 		.catch(() => {
 			throw new Error('No request data');
 		});
-        console.log("step 1: get user input")
-        console.log(reqMessages)
+	console.log('step 1: get user input');
+	console.log(reqMessages);
 
 	const index = pinecone.Index(PINECONE_INDEX_NAME);
-    console.log("step 2: get Pineconde index")
-    console.log(index)
+	console.log('step 2: get Pineconde index');
+	console.log(index);
 
 	/* create vectorstore*/
 	const vectorStore = await PineconeStore.fromExistingIndex(
@@ -31,8 +31,8 @@ export const POST = async ({ request }) => {
 			namespace: PINECONE_NAME_SPACE
 		}
 	);
-    console.log("step 3: get vectorstore")
-    console.log(vectorStore)
+	console.log('step 3: get vectorstore');
+	console.log(vectorStore);
 
 	// create stream writer
 	const writeStream = (data: any) => {
@@ -49,8 +49,8 @@ export const POST = async ({ request }) => {
 		const data = { data: token };
 		return writeStream(data);
 	});
-    console.log("step 4: make chain")
-    console.log(chain)
+	console.log('step 4: make chain');
+	console.log(chain);
 
 	try {
 		// Ask a question

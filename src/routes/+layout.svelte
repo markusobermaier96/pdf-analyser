@@ -1,13 +1,17 @@
 <script lang="ts">
 	import FileUpload from '@lib/components/FileUpload.svelte';
-	import Payment from '@lib/components/Payment.svelte';
 	import '../app.css';
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
 	import { isMetamaskInstalled } from '@lib/store/globalStore';
 	import { writable } from 'svelte/store';
+	import type { MetaMaskInpageProvider } from '@metamask/providers';
+	import Metamask from '@lib/components/Metamask.svelte';
+
 
 	let metamaskPending = writable(false);
+	let ethereum: MetaMaskInpageProvider | undefined = undefined ;
+	onMount(() => {ethereum = window.ethereum})
 
 	const navigation = [
 		{
@@ -28,11 +32,10 @@
 
 	const connectToMetamask = async () => {
 		metamaskPending.set(true);
+		
 		try {
 			// Request access to the user's MetaMask accounts
-			const account = await ethereum.request({ method: 'eth_requestAccounts' }).then((accounts) => {
-				return accounts[0];
-			});
+			await ethereum?.request({ method: 'eth_requestAccounts' });
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -44,7 +47,6 @@
 	export let data;
 </script>
 
-<Payment />
 <FileUpload />
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header class="">
@@ -68,15 +70,18 @@
 				<label for="file-upload" class="btn {!$isMetamaskInstalled ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				<!-- TODO: Add this when user is authenticated -->
-				<!-- <label for="pay" class="btn">Pay with Crypto</label> -->
-
-				<button
+				{#if ethereum?.selectedAddress}
+					<!-- <label for="pay" class="btn">Pay with Crypto</label> -->
+					<Metamask/>
+				{:else}
+					<button
 					on:click={connectToMetamask}
 					disabled={$metamaskPending}
 					class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
-					>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
-				>
+				>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
+			>
+				{/if}
+				
 			</nav-right>
 		</div>
 	</header>

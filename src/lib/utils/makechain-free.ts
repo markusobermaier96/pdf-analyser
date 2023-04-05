@@ -1,7 +1,7 @@
 import HF_ACCESS_TOKEN from '$env/static/private';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { HuggingFaceInference } from 'langchain/llms';
-import { PromptTemplate, LLMChain } from 'langchain'
+import { PromptTemplate, LLMChain } from 'langchain';
 import { ChatVectorDBQAChain, loadQAChain } from 'langchain/chains';
 import { CallbackManager } from 'langchain/callbacks';
 
@@ -38,8 +38,8 @@ Answer in Markdown:`
 );
 
 export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: string) => void) => {
-    const questionGenerator = new LLMChain({
-		llm: new HuggingFaceInference({ temperature: 1, model: "gpt2" }),
+	const questionGenerator = new LLMChain({
+		llm: new HuggingFaceInference({ temperature: 1, model: 'gpt2' }),
 		prompt: CONDENSE_PROMPT
 	});
 	const docChain = loadQAChain(
@@ -64,4 +64,4 @@ export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: st
 		returnSourceDocuments: true,
 		k: 2 //number of source documents to return
 	});
-}
+};

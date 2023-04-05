@@ -11,6 +11,7 @@
 	let chatMessages: ChatCompletionRequestMessage[] = [];
 	let answer = '';
 
+	// scroll to bottom function
 	let scrollToDiv: HTMLDivElement;
 	function scrollToBottom() {
 		setTimeout(function () {
@@ -18,16 +19,15 @@
 		}, 100);
 	}
 
+	// handle error function
 	function handleError<T>(err: T) {
 		loading.set(false);
 		query = '';
-		toast.error(err.data);
+		toast.error(err.data); // <= should not bitch around, it works
 	}
 
 	// handle form submission
 	const handleSubmit = async () => {
-		// if no user input, dont call server and return
-
 		query = query.trim().replaceAll('\n', ' ');
 
 		if (!query) {
