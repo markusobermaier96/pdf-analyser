@@ -1,19 +1,28 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { BrowserProvider, ethers, formatEther, type BigNumberish } from 'ethers';
+	import { BrowserProvider, ethers, formatEther, type BigNumberish, EnsResolver, JsonRpcSigner } from 'ethers';
 
-	const network = "test"
-
+	
 	let provider: BrowserProvider;
-	let signer;
-	let balance: BigNumberish
-	let balance_eth: string;
+	let signer: JsonRpcSigner;
+	let network = "testtest";
+
+	let resolver: EnsResolver | null;
+	let account_addr: string;
+	let account_balance_eth: bigint
+	let blockies: string | null | undefined;
 
 	onMount(async () => {
-		provider = new ethers.BrowserProvider(window.ethereum)
+		provider = new ethers.BrowserProvider(window.ethereum);
+		await provider.send("eth_requestAccounts", []);
 		signer = await provider.getSigner();
-		balance = await provider.getBalance("ethers.eth")
-		balance_eth = formatEther(balance)
+
+		resolver = await provider.getResolver("markus.eth");
+		//console.log(resolver?.getAddress())
+		//blockies = await provider.getAvatar("0x093A8Ff723691ecA35b47167E4878786db9D7337")
+		var address = await provider.resolveName('alice.eth');
+		console.log(address)
+		account_balance_eth = await provider.getBalance("ethers.eth");
 	})
 	
 	let amount: number;
@@ -21,36 +30,19 @@
 	let cryptoType: string;
 
 	async function switchNetwork() {
-		try {
-			await ethereum?.request({
-				method: 'wallet_switchEthereumChain',
-				params: [{ chainId: '0xf00' }]
-			});
-		} catch (switchError: any) {
-			// This error code indicates that the chain has not been added to MetaMask.
-			if (switchError.code === 4902) {
-				try {
-					await ethereum?.request({
-						method: 'wallet_addEthereumChain',
-						params: [
-							{
-								chainId: '0xf00',
-								chainName: network,
-								rpcUrls: ['https://127.0.0.1'] //TODO: add rpcUrls
-							}
-						]
-					});
-				} catch (addError) {
-					// handle "add" error
-				}
-			}
-			// handle other "switch" errors
-		}
+		provider = new ethers.BrowserProvider(window.ethereum, "any")
+		provider.on("network", (newNetwork, oldNetwork) => {
+        // When a Provider makes its initial connection, it emits a "network"
+        // event with a null oldNetwork along with the newNetwork. So, if the
+        // oldNetwork exists, it represents a changing network
+        if (oldNetwork) {
+            window.location.reload();
+        }
+    });
 	}
 
-	function submitPayment() {
-		//switchNetwork().catch(err => {console.log(err); return})
-		// TODO: all ether related backend stuff goes here
+	function makeTransaction() {
+		
 	}
 </script>
 
@@ -76,6 +68,13 @@
 	</div>
 </div> -->
 
-<div>
-	{balance_eth}
+<div class="self-center flex items-center">
+	{#if provider}
+		<img src={blockies} alt="Avatar" />
+		<div class="container">
+			<i class="fa-brands fa-ethereum"></i>
+			{account_balance_eth} <br>
+		</div>
+		
+	{/if}
 </div>

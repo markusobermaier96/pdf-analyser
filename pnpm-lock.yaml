@@ -32,6 +32,7 @@ specifiers:
   svelte: ^3.54.0
   svelte-check: ^3.0.1
   svelte-french-toast: 1.0.4-beta.0
+  svelte-youtube-embed: ^0.1.8
   tailwindcss: ^3.2.7
   tslib: ^2.4.1
   typescript: ^5.0.0
@@ -71,6 +72,7 @@ devDependencies:
   prettier-plugin-svelte: 2.10.0_5ir2xprf4ygk6mygilwnltaw3a
   svelte: 3.57.0
   svelte-check: 3.1.4_sd5d5bwhwct4qrvp7ra4wv5wou
+  svelte-youtube-embed: 0.1.8
   tailwindcss: 3.2.7_postcss@8.4.21
   tslib: 2.5.0
   typescript: 5.0.2
@@ -2357,6 +2359,10 @@ packages:
     dependencies:
       svelte: 3.57.0
     dev: false
+
+  /svelte-youtube-embed/0.1.8:
+    resolution: {integrity: sha512-91FmRL0G9x64Qxf7vRIycuRon3cIOjO6YMeUvEjhRD+MUeIMZs4XuPv/ULtK/xvKmSH/T9DE0FgtFaBqZ4HxWg==}
+    dev: true
 
   /svelte/3.57.0:
     resolution: {integrity: sha512-WMXEvF+RtAaclw0t3bPDTUe19pplMlfyKDsixbHQYgCWi9+O9VN0kXU1OppzrB9gPAvz4NALuoca2LfW2bOjTQ==}

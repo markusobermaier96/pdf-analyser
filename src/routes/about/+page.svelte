@@ -1,4 +1,10 @@
+<script lang="ts">
+	import Youtube from "svelte-youtube-embed";
+</script>
+
 <div class="text-xl w-1/2 self-center mt-8 p-5">
+	<Youtube id="YVgfHZMFFFQ"></Youtube>
+	<div class="my-6"></div>
 	<ul class="list-style-disc space-y-6 outer">
 		<li>
 			Upload a PDF file by clicking the "Upload" button and selecting the PDF from your local disk.
