@@ -8,10 +8,12 @@
 	import type { MetaMaskInpageProvider } from '@metamask/providers';
 	import Metamask from '@lib/components/Metamask.svelte';
 
-
 	let metamaskPending = writable(false);
-	let ethereum: MetaMaskInpageProvider | undefined = undefined ;
-	onMount(() => {ethereum = window.ethereum})
+	let ethereum: MetaMaskInpageProvider | undefined;
+	onMount(() => {
+		ethereum = window.ethereum;
+		checkMetamaskInstalled();
+	});
 
 	const navigation = [
 		{
@@ -30,9 +32,9 @@
 		});
 	}
 
-	const connectToMetamask = async () => {
+	async function connectToMetamask() {
 		metamaskPending.set(true);
-		
+
 		try {
 			// Request access to the user's MetaMask accounts
 			await ethereum?.request({ method: 'eth_requestAccounts' });
@@ -41,10 +43,7 @@
 		} finally {
 			metamaskPending.set(false);
 		}
-	};
-
-	onMount(checkMetamaskInstalled);
-	export let data;
+	}
 </script>
 
 <FileUpload />
@@ -71,23 +70,21 @@
 					>Upload PDF</label
 				>
 				{#if ethereum?.selectedAddress}
-					<!-- <label for="pay" class="btn">Pay with Crypto</label> -->
-					<Metamask/>
+					<Metamask />
 				{:else}
 					<button
-					on:click={connectToMetamask}
-					disabled={$metamaskPending}
-					class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
-				>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
-			>
+						on:click={connectToMetamask}
+						disabled={$metamaskPending}
+						class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
+						>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
+					>
 				{/if}
-				
 			</nav-right>
 		</div>
 	</header>
 
 	<main class="flex w-full flex-1 flex-col overflow-hidden">
-		{#if $isMetamaskInstalled !== undefined}
+		{#if $isMetamaskInstalled}
 			<slot />
 		{/if}
 	</main>
