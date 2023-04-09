@@ -1,4 +1,4 @@
-import { MetaMaskInpageProvider } from "@metamask/providers";
+import { MetaMaskInpageProvider } from '@metamask/providers';
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -8,10 +8,10 @@ declare global {
 		// interface Locals {}
 		// interface PageData {}
 		// interface Platform {}
-	};
+	}
 	interface Window {
 		ethereum: MetaMaskInpageProvider;
-	  }
+	}
 }
 
 export {};

@@ -1,8 +1,17 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms';
+	import { confirmPayment, makePayment } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
 
 	const handleSubmit: SubmitFunction = async ({ form, data, action, cancel, submitter }) => {
+
+		await confirmPayment().then(async _ => {
+				await makePayment()
+		}).catch((err) => {
+			toast.error("Payment not confirmed. Cancelling request.")
+			throw Error(err);
+		})
+		
 		if (!(data.has('pdf') && data.get('pdf')?.size != 0)) {
 			toast.error('Please choose a pdf file.');
 			cancel();
