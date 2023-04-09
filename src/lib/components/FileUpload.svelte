@@ -1,24 +1,43 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms';
-	import { confirmPayment, makePayment } from '@lib/utils/metamask';
+	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
 
 	const handleSubmit: SubmitFunction = async ({ form, data, action, cancel, submitter }) => {
-
-		await confirmPayment().then(async _ => {
-				await makePayment()
-		}).catch((err) => {
-			toast.error("Payment not confirmed. Cancelling request.")
-			throw Error(err);
-		})
-		
-		if (!(data.has('pdf') && data.get('pdf')?.size != 0)) {
+		if (
+			!(
+				data.has('pdf') &&
+				data.get('pdf')?.size !== 0 &&
+				data.get('pdf')?.type === 'application/pdf'
+			)
+		) {
 			toast.error('Please choose a pdf file.');
 			cancel();
-		} else if (data.get('pdf')?.type != 'application/pdf') {
-			toast.error('This is not a pdf file');
-			cancel();
+			return;
 		}
+
+		// confirm metamask transaction before upload
+		await sendTransaction()
+			.then((val) => console.log(val))
+			.catch((err) => {
+				if (err.code === 4001) {
+					toast.error('Transaction denied. Abort upload.');
+				}
+
+				cancel();
+				return;
+			});
+
+		/* await confirmPayment()
+			.then(async (_) => {
+				
+			})
+			.catch((err) => {
+				toast.error(err);
+				cancel();
+				return;
+			}); */
+
 		return async ({ result, update }) => {
 			if (result.type == 'success') {
 				toast.success('Successfully uploaded file');
