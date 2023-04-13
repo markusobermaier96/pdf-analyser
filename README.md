@@ -25,3 +25,7 @@ just lint
 - css framework: **[Tailwind](https://github.com/tailwindlabs/tailwindcss)**
 - packet manager: **[pnpm](https://github.com/pnpm/pnpm)**
 - process automation: **[just](https://github.com/casey/just)**
+
+## User Authentication (no database)
+
+![Metamask auth](./Metamask_auth.png)

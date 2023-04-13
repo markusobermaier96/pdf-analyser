@@ -3,15 +3,14 @@
 	import '../app.css';
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
-	import { isMetamaskInstalled } from '@lib/store/globalStore';
 	import { writable } from 'svelte/store';
-	import type { MetaMaskInpageProvider } from '@metamask/providers';
 	import Metamask from '@lib/components/Metamask.svelte';
+	import toast from 'svelte-french-toast';
+	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
 
 	let metamaskPending = writable(false);
-	let ethereum: MetaMaskInpageProvider | undefined;
 	onMount(() => {
-		ethereum = window.ethereum;
+		ethereum.set(window.ethereum);
 		checkMetamaskInstalled();
 	});
 
@@ -34,12 +33,24 @@
 
 	async function connectToMetamask() {
 		metamaskPending.set(true);
-
 		try {
 			// Request access to the user's MetaMask accounts
-			await ethereum?.request({ method: 'eth_requestAccounts' });
+			await $ethereum?.request({
+				method: 'eth_requestAccounts'
+			});
+
+			await fetch('/api/prisma', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify($ethereum?.selectedAddress)
+			}).then((val) => {
+				console.log(val.body);
+			});
 		} catch (error) {
 			console.error(error);
+			toast.error('network error occurred');
 		} finally {
 			metamaskPending.set(false);
 		}
@@ -48,7 +59,7 @@
 
 <FileUpload />
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
-	<header class="">
+	<header>
 		<div class="flex h-16 border-b border-b-slate-200 py-4">
 			<nav-left class="ml-4 flex self-center">
 				<ul class="flex space-x-4">
@@ -69,14 +80,15 @@
 				<label for="file-upload" class="btn {!$isMetamaskInstalled ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				{#if ethereum?.selectedAddress}
+				{#if $ethereum?.selectedAddress}
 					<Metamask />
 				{:else}
 					<button
 						on:click={connectToMetamask}
 						disabled={$metamaskPending}
 						class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
-						>Connect to <img alt="Metamask" src="metamask-icon.png" class="w-6 ml-2" /></button
+						>Login with
+						<img alt="Metamask" src="metamask-icon.png" class="w-5 ml-2" /></button
 					>
 				{/if}
 			</nav-right>
