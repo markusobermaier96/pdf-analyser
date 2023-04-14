@@ -16,8 +16,8 @@
 		if (isMetamaskInstalled) {
 			ethereum.set(window.ethereum);
 		}
-		checkMetamaskInstalled();
-		signNonce();
+		await checkMetamaskInstalled();
+		await signNonce();
 	});
 
 	const navigation = [
