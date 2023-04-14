@@ -26,6 +26,6 @@ just lint
 - packet manager: **[pnpm](https://github.com/pnpm/pnpm)**
 - process automation: **[just](https://github.com/casey/just)**
 
-## User Authentication (no database)
+## User Authentication (from https://blog.devgenius.io/authenticating-users-to-your-web-app-using-metamask-and-nodejs-e920e45e358)
 
 ![Metamask auth](./Metamask_auth.png)
