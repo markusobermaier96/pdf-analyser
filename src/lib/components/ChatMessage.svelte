@@ -29,7 +29,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-8 h-8 mr-4"
+			class="w-7 mr-4"
 		>
 			<path
 				stroke-linecap="round"
@@ -38,7 +38,7 @@
 			/>
 		</svg>
 	{:else}
-		<img class="w-8 h-8 mr-4" src="bot-image.png" alt="bot-icon" />
+		<img class="w-8 mr-4" src="bot-image.png" alt="bot-icon" />
 	{/if}
 	{@html md.render(content)}
 </div>

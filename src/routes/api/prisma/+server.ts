@@ -1,7 +1,8 @@
 import { prisma } from '@lib/server/prisma';
 import crypto from 'crypto';
+import type { RequestHandler } from './$types';
 
-export const POST = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, params }) => {
 	const account = await request
 		.json()
 		.then((data: string) => {
@@ -10,15 +11,35 @@ export const POST = async ({ request }) => {
 		.catch(() => {
 			throw new Error('No request data');
 		});
-	console.log(account);
 
-	let user_model = {
-		publicAddress: account,
-		nonce: crypto.randomBytes(16).toString('hex')
-	};
-	await prisma.user.create({
-		data: user_model
-	}).then(() => console.log("created user"));
+	const user = await prisma.user.findUnique({
+		where: {
+			publicAddress: account
+		}
+	});
 
-	return new Response('Account registered', { status: 200 });
+	let nonce;
+	if (!user) {
+		nonce = crypto.randomBytes(16).toString('hex');
+		let user_model = {
+			publicAddress: account,
+			nonce: nonce
+		};
+		await prisma.user
+			.create({
+				data: user_model
+			})
+			.then(() => {
+				console.log('created user');
+				return new Response('Account registered', { status: 200 });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	} else {
+		nonce = user.nonce;
+		console.log('user already exists');
+	}
+
+	return new Response(String(nonce));
 };

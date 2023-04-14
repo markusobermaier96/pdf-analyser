@@ -5,13 +5,19 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import Metamask from '@lib/components/Metamask.svelte';
-	import toast from 'svelte-french-toast';
 	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
+	import { enhance } from '$app/forms';
+	import type { PageData } from './$types';
+	import { Item, get } from '@lib/utils/metamask';
+	import type { BrowserProvider, JsonRpcSigner } from 'ethers';
 
 	let metamaskPending = writable(false);
-	onMount(() => {
-		ethereum.set(window.ethereum);
+	onMount(async () => {
+		if (isMetamaskInstalled) {
+			ethereum.set(window.ethereum);
+		}
 		checkMetamaskInstalled();
+		signNonce();
 	});
 
 	const navigation = [
@@ -25,36 +31,49 @@
 		}
 	];
 
+	async function signNonce() {
+		if (!data.nonce) {
+			return;
+		}
+
+		let signer = (await get(Item.Signer)) as JsonRpcSigner;
+		const signed = await signer.signMessage(data.nonce);
+		console.log('nonce: ' + data.nonce);
+		console.log('signed nonce ' + signed);
+	}
+
 	async function checkMetamaskInstalled() {
 		await detectEthereumProvider().then((val) => {
 			isMetamaskInstalled.set(!!val?.isMetaMask);
 		});
 	}
 
-	async function connectToMetamask() {
+	/* async function connectToMetamask() {
 		metamaskPending.set(true);
-		try {
-			// Request access to the user's MetaMask accounts
-			await $ethereum?.request({
-				method: 'eth_requestAccounts'
-			});
 
-			await fetch('/api/prisma', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify($ethereum?.selectedAddress)
-			}).then((val) => {
-				console.log(val.body);
-			});
-		} catch (error) {
-			console.error(error);
-			toast.error('network error occurred');
-		} finally {
-			metamaskPending.set(false);
-		}
-	}
+		// Request access to the user's MetaMask accounts
+		await $ethereum?.request({
+			method: 'eth_requestAccounts'
+		});
+
+		const nonce = await fetch('/api/prisma', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify($ethereum?.selectedAddress)
+		})
+			.then((res) => {
+				return res.json();
+			})
+			.catch((err) => {
+				toast.error('network error occurred');
+			})
+			.finally(() => metamaskPending.set(false));
+
+		console.log('nonce:' + nonce);
+	} */
+	export let data: PageData;
 </script>
 
 <FileUpload />
@@ -83,13 +102,34 @@
 				{#if $ethereum?.selectedAddress}
 					<Metamask />
 				{:else}
-					<button
-						on:click={connectToMetamask}
-						disabled={$metamaskPending}
-						class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
-						>Login with
-						<img alt="Metamask" src="metamask-icon.png" class="w-5 ml-2" /></button
+					<form
+						action="?/authenticate"
+						method="POST"
+						use:enhance={async ({ form, data, action, cancel, submitter }) => {
+							metamaskPending.set(true);
+							await $ethereum
+								?.request({
+									method: 'eth_requestAccounts'
+								})
+								.then(() => data.set('user', $ethereum?.selectedAddress ?? ''))
+								.catch((err) => {
+									cancel();
+								});
+							return async ({ result, update }) => {
+								console.log(result.data?.nonce);
+								metamaskPending.set(false);
+								update();
+							};
+						}}
 					>
+						<button
+							type="submit"
+							disabled={$metamaskPending}
+							class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"
+							>Login with
+							<img alt="Metamask" src="metamask-icon.png" class="w-5 ml-2" /></button
+						>
+					</form>
 				{/if}
 			</nav-right>
 		</div>
@@ -104,6 +144,3 @@
 		<div>Powered by LangChainAI.</div>
 	</footer>
 </div>
-
-<style lang="postcss">
-</style>

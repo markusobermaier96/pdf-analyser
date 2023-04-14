@@ -13,3 +13,5 @@ package-lock.json
 yarn.lock
 
 tsconfig.json
+
+docker-data/
