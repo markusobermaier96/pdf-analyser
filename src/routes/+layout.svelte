@@ -17,7 +17,6 @@
 			ethereum.set(window.ethereum);
 		}
 		await checkMetamaskInstalled();
-		await signNonce();
 	});
 
 	const navigation = [
@@ -33,7 +32,7 @@
 
 	async function signNonce() {
 		if (!data.nonce) {
-			return;
+			console.log("no nonce data available")
 		}
 
 		let signer = (await get(Item.Signer)) as JsonRpcSigner;
@@ -116,8 +115,10 @@
 									cancel();
 								});
 							return async ({ result, update }) => {
+								// TODO: remove log
 								console.log(result.data?.nonce);
 								metamaskPending.set(false);
+								await signNonce();
 								update();
 							};
 						}}
