@@ -32,16 +32,20 @@
 	async function signNonce() {
 		if (!data.nonce) {
 			console.log('no nonce data available');
+			return;
 		}
+		const nonce = data.nonce!;
+		const address = $ethereum?.selectedAddress;
 		try {
 			let signer = (await get(Item.Signer)) as JsonRpcSigner;
-			const signed = await signer.signMessage(data.nonce);
+			const signed = await signer.signMessage(nonce);
 			await fetch('/api/auth', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
+					address,
 					signed
 				})
 			}).then((res) => userToken.set(JSON.stringify(res)));
