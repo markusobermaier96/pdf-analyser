@@ -3,3 +3,4 @@ import { writable } from 'svelte/store';
 
 export const ethereum = writable<MetaMaskInpageProvider | undefined>();
 export const isMetamaskInstalled = writable();
+export const userToken = writable<string>();

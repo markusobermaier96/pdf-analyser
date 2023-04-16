@@ -8,39 +8,46 @@
 	</div>
 
 	<div class="my-6" />
-	<ul class="list-style-disc space-y-6 outer">
-		<li>
-			Upload a PDF file by clicking the "Upload" button and selecting the PDF from your local disk.
-		</li>
-		<li>
-			Choose an option:
-			<ul class="list-style-disc inner font-bold">
-				<li>free (less optimized model)</li>
-				<li>payed (Powered by OpenAi)</li>
-			</ul>
-		</li>
-		<li>
-			Once you've selected your chatbot model, you can start interacting with it by asking questions
-			about the content of your PDF file. The chatbot will analyze the text and provide you with
-			helpful answers.
-		</li>
-		<li>
-			If you need to change the chatbot model you selected, you can do so at any time by clicking
-			the "Change Model" button.
-		</li>
+	<ul class="space-y-6">
+		<div class="font-bold flex justify-center bg-slate-100 p-2">Authentication process</div>
+		<ul class="inner">
+			<li>Log in with your Metamask account by clicking "Log in with Metamask"</li>
+			<li>This will also create your account, if you use the application the first time</li>
+			<li>To Log In to the application, you will be prompted with a "Sign" message</li>
+		</ul>
+		<br />
+		<div class="font-bold flex justify-center bg-slate-100 p-2">How to use the application</div>
+		<ul class="inner">
+			<li>
+				Upload a PDF file by clicking the "Upload" button and selecting the PDF from your local
+				disk.
+			</li>
+			<li>
+				Choose an option:
+				<ul class="font-light">
+					<li>free (less optimized model)</li>
+					<li>payed (Powered by OpenAi)</li>
+				</ul>
+			</li>
+			<li>
+				Once you've selected your chatbot model, you can start interacting with it by asking
+				questions about the content of your PDF file. The chatbot will analyze the text and provide
+				you with helpful answers.
+			</li>
+			<li>
+				If you need to change the chatbot model you selected, you can do so at any time by clicking
+				the "Change Model" button.
+			</li>
+		</ul>
 	</ul>
 </div>
 
 <style lang="postcss">
 	.outer {
-		@apply border border-black rounded-lg shadow-lg p-5;
-	}
-
-	.outer > li {
-		@apply border-b pb-7;
+		@apply border border-black rounded shadow-lg p-7;
 	}
 
 	.inner {
-		@apply text-center;
+		@apply text-center space-y-2 border border-black rounded shadow-lg p-7;
 	}
 </style>

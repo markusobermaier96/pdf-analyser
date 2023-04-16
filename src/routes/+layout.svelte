@@ -4,20 +4,18 @@
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import Metamask from '@lib/components/Metamask.svelte';
-	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
+	import { ethereum, isMetamaskInstalled, userToken } from '@lib/store/globalStore';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { Item, get } from '@lib/utils/metamask';
 	import type { BrowserProvider, JsonRpcSigner } from 'ethers';
+	import User from '@lib/components/User.svelte';
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
-		if ($isMetamaskInstalled) {
+		await checkMetamaskInstalled().then(() => {
 			ethereum.set(window.ethereum);
-		} else {
-			await checkMetamaskInstalled();
-		}
+		});
 	});
 
 	const navigation = [
@@ -33,13 +31,23 @@
 
 	async function signNonce() {
 		if (!data.nonce) {
-			console.log("no nonce data available")
+			console.log('no nonce data available');
 		}
-
-		let signer = (await get(Item.Signer)) as JsonRpcSigner;
-		const signed = await signer.signMessage(data.nonce);
-		console.log('nonce: ' + data.nonce);
-		console.log('signed nonce ' + signed);
+		try {
+			let signer = (await get(Item.Signer)) as JsonRpcSigner;
+			const signed = await signer.signMessage(data.nonce);
+			await fetch('/api/auth', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					signed
+				})
+			}).then((res) => userToken.set(JSON.stringify(res)));
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async function checkMetamaskInstalled() {
@@ -47,32 +55,6 @@
 			isMetamaskInstalled.set(!!val?.isMetaMask);
 		});
 	}
-
-	/* async function connectToMetamask() {
-		metamaskPending.set(true);
-
-		// Request access to the user's MetaMask accounts
-		await $ethereum?.request({
-			method: 'eth_requestAccounts'
-		});
-
-		const nonce = await fetch('/api/prisma', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify($ethereum?.selectedAddress)
-		})
-			.then((res) => {
-				return res.json();
-			})
-			.catch((err) => {
-				toast.error('network error occurred');
-			})
-			.finally(() => metamaskPending.set(false));
-
-		console.log('nonce:' + nonce);
-	} */
 	export let data: PageData;
 </script>
 
@@ -96,11 +78,13 @@
 				>PDF Analyser</brand-name
 			>
 			<nav-right class="self-center flex justify-end w-full mr-4 space-x-12">
-				<label for="file-upload" class="btn {!$isMetamaskInstalled ? 'btn-disabled' : ''}"
+				<label
+					for="file-upload"
+					class="btn {!($isMetamaskInstalled && $userToken) ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				{#if $ethereum?.selectedAddress}
-					<Metamask />
+				{#if $userToken}
+					<User />
 				{:else}
 					<form
 						action="?/authenticate"
@@ -116,9 +100,9 @@
 									cancel();
 								});
 							return async ({ update }) => {
+								update();
 								metamaskPending.set(false);
 								await signNonce();
-								update();
 							};
 						}}
 					>
@@ -136,9 +120,7 @@
 	</header>
 
 	<main class="flex w-full flex-1 flex-col overflow-hidden">
-		{#if $isMetamaskInstalled}
-			<slot />
-		{/if}
+		<slot />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
 		<div>Powered by LangChainAI.</div>

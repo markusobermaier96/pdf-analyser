@@ -37,18 +37,26 @@ export const actions: Actions = {
 			return data.get('user') as string;
 		});
 		if (!userAddress) {
-			throw error(404, {
-				message: 'No user data'
-			});
+			throw error(500, "No user data");
 		}
-		if (!cookies.get('address')) cookies.set('metamask_address', userAddress);
+		console.log("user data: " + userAddress)
+
+		// set cookie
+		if (!cookies.get('metamask_address')) {
+			cookies.set('metamask_address', userAddress);
+		} 
 
 		// retrieve user from db
-		const user = await prisma.user.findUnique({
-			where: {
-				publicAddress: userAddress
-			}
-		});
+		const user = await prisma.user
+			.findUnique({
+				where: {
+					publicAddress: userAddress
+				}
+			})
+			.catch((err) => {
+				throw error(500, 'Could not retrieve user from db');
+			});
+		console.log("user from db: " + user)
 
 		/* create new user if he is not registered yet and return nonce to frontend */
 		let nonce;
@@ -64,7 +72,7 @@ export const actions: Actions = {
 				})
 				.then(() => {
 					console.log('created user');
-					return new Response('Account registered', { status: 200 });
+					return { success: true };
 				})
 				.catch((err) => {
 					console.log(err);

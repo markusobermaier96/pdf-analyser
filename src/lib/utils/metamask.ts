@@ -15,9 +15,11 @@ async function initialize() {
 	if (!window.ethereum) {
 		throw Error('window.ethereum not found');
 	}
-	let ethereum = window.ethereum
+	let ethereum = window.ethereum;
 	provider = new ethers.BrowserProvider(ethereum, 'any');
-	account = await provider.send('eth_requestAccounts', []).then(res => {return res[0]});
+	account = await provider.send('eth_requestAccounts', []).then((res) => {
+		return res[0];
+	});
 	//account = accounts[0];
 
 	// listen to changes
@@ -41,7 +43,7 @@ async function initialize() {
 
 export async function get(item: Item) {
 	if (!(provider && signer && account)) {
-		await initialize()
+		await initialize();
 	}
 	switch (item) {
 		case Item.Provider:

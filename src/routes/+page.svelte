@@ -4,7 +4,7 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
-	import { isMetamaskInstalled } from '@lib/store/globalStore';
+	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
 
 	let loading = writable(false);
 	let query = '';
@@ -28,6 +28,10 @@
 
 	// handle form submission
 	const handleSubmit = async () => {
+		if (!$userToken) {
+			return;
+		}
+
 		query = query.trim().replaceAll('\n', ' ');
 
 		if (!query) {
