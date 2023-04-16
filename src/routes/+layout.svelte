@@ -13,10 +13,11 @@
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
-		if (isMetamaskInstalled) {
+		if ($isMetamaskInstalled) {
 			ethereum.set(window.ethereum);
+		} else {
+			await checkMetamaskInstalled();
 		}
-		await checkMetamaskInstalled();
 	});
 
 	const navigation = [
@@ -114,9 +115,7 @@
 								.catch((err) => {
 									cancel();
 								});
-							return async ({ result, update }) => {
-								// TODO: remove log
-								console.log(result.data?.nonce);
+							return async ({ update }) => {
 								metamaskPending.set(false);
 								await signNonce();
 								update();
