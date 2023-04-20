@@ -173,12 +173,6 @@
 		display: flex;
 	}
 
-	.loadingwheel {
-		position: absolute;
-		top: 0.2rem;
-		right: 0.25rem;
-	}
-
 	.generatebutton:hover {
 		background: #e4575726;
 		border-radius: 0.2rem;
@@ -190,30 +184,6 @@
 		background: none;
 	}
 
-	.messagelistloading {
-		display: flex;
-		width: 100%;
-		justify-content: center;
-		margin-top: 1rem;
-	}
-
-	.usermessage {
-		background: #ffffff;
-		padding: 1.5rem;
-		color: #000;
-	}
-
-	.usermessagewaiting {
-		padding: 1.5rem;
-		color: #000;
-		background: linear-gradient(to left, #07080938, #1a1c2024, #07080936);
-		background-size: 200% 200%;
-		background-position: -100% 0;
-		animation: loading-gradient 2s ease-in-out infinite;
-		animation-direction: alternate;
-		animation-name: loading-gradient;
-	}
-
 	@keyframes loading-gradient {
 		0% {
 			background-position: -100% 0;
@@ -221,52 +191,6 @@
 		100% {
 			background-position: 100% 0;
 		}
-	}
-
-	.apimessage {
-		background: #f9fafb;
-		padding: 1.5rem;
-		color: #000;
-		animation: fadein 0.5s;
-	}
-
-	@keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-
-	.markdownanswer {
-		line-height: 1.75;
-	}
-
-	.markdownanswer a:hover {
-		opacity: 0.8;
-	}
-
-	.markdownanswer a {
-		color: #b13a3a;
-		font-weight: 500;
-	}
-
-	.markdownanswer code {
-		color: #15cb19;
-		font-weight: 500;
-		white-space: pre-wrap !important;
-	}
-
-	.markdownanswer ol,
-	.markdownanswer ul {
-		margin: 1rem;
-	}
-
-	.markdownanswer h1,
-	.markdownanswer h2,
-	.markdownanswer h3 {
-		font-size: inherit;
 	}
 
 	.center {
@@ -278,44 +202,11 @@
 		flex-direction: column;
 	}
 
-	.pointsnormal {
-		width: 90%;
-		height: 90%;
-	}
-
-	.pointsdim {
-		width: 90%;
-		height: 90%;
-		opacity: 0.25;
-	}
-
 	/* Mobile optimization */
 	@media (max-width: 600px) {
 		.main {
 			padding: 1rem;
 			max-height: 90vh;
-		}
-
-		.cloud {
-			width: 22rem;
-			height: 28rem;
-		}
-		.textarea {
-			width: 22rem;
-		}
-		.topnav {
-			border: 1px solid black;
-			align-items: center;
-			padding: 0.85rem 0.75rem 0.85rem 0.75rem;
-		}
-
-		.navlogo {
-			font-size: 1.25rem;
-			width: 20rem;
-		}
-
-		.markdownanswer code {
-			white-space: pre-wrap !important;
 		}
 	}
 </style>

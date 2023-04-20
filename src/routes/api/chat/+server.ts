@@ -5,8 +5,9 @@ import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import type { ChatCompletionRequestMessage } from 'openai';
 import { makeChain } from '@lib/utils/makechain-free';
+import type { RequestHandler } from './$types';
 
-export const POST = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const reqMessages: ChatCompletionRequestMessage[] = await request
 		.json()
 		.then((data) => {
@@ -67,8 +68,8 @@ export const POST = async ({ request }) => {
 				'Content-Type': 'text/event-stream'
 			}
 		});
-	} catch (error) {
-		return new Response(error.message, { status: 500 });
+	} catch (err) {
+		return new Response("Network error occured", { status: 500 });
 	} finally {
 		console.log('done');
 	}

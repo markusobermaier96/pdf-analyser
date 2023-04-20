@@ -10,6 +10,7 @@
 	import { Item, get } from '@lib/utils/metamask';
 	import type { BrowserProvider, JsonRpcSigner } from 'ethers';
 	import User from '@lib/components/User.svelte';
+	import toast from 'svelte-french-toast';
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
@@ -35,22 +36,23 @@
 			return;
 		}
 		const nonce = data.nonce!;
-		const address = $ethereum?.selectedAddress;
+		const userAddress = $ethereum?.selectedAddress;
+		console.log(userAddress);
 		try {
 			let signer = (await get(Item.Signer)) as JsonRpcSigner;
-			const signed = await signer.signMessage(nonce);
+			const signedMessage = await signer.signMessage(nonce);
 			await fetch('/api/auth', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					address,
-					signed
+					userAddress,
+					signedMessage
 				})
 			}).then((res) => userToken.set(JSON.stringify(res)));
 		} catch (error) {
-			console.log(error);
+			toast.error('Cancelling since you bitch denied the authorization request...');
 		}
 	}
 
@@ -106,7 +108,14 @@
 							return async ({ update }) => {
 								update();
 								metamaskPending.set(false);
-								await signNonce();
+								await signNonce()
+									.then((_) => {
+										toast.success('Logged in');
+									})
+									.catch((err) => {
+										console.log(err);
+										toast.error(err);
+									});
 							};
 						}}
 					>
