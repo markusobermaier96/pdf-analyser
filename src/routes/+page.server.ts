@@ -37,14 +37,14 @@ export const actions: Actions = {
 			return data.get('user') as string;
 		});
 		if (!userAddress) {
-			throw error(500, "No user data");
+			throw error(500, 'No user data');
 		}
-		console.log("user data: " + userAddress)
+		console.log('user data: ' + userAddress);
 
 		// set cookie
 		if (!cookies.get('metamask_address')) {
 			cookies.set('metamask_address', userAddress);
-		} 
+		}
 
 		// retrieve user from db
 		const user = await prisma.user
@@ -56,7 +56,7 @@ export const actions: Actions = {
 			.catch((err) => {
 				throw error(500, 'Could not retrieve user from db');
 			});
-		console.log("user from db: " + user)
+		console.log('user from db: ' + user);
 
 		/* create new user if he is not registered yet and return nonce to frontend */
 		let nonce;

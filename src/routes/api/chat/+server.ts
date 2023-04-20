@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		});
 	} catch (err) {
-		return new Response("Network error occured", { status: 500 });
+		return new Response('Network error occured', { status: 500 });
 	} finally {
 		console.log('done');
 	}
