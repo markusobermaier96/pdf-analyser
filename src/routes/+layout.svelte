@@ -37,23 +37,27 @@
 		}
 		const nonce = data.nonce!;
 		const userAddress = $ethereum?.selectedAddress;
-		console.log(userAddress);
-		try {
-			let signer = (await get(Item.Signer)) as JsonRpcSigner;
-			const signedMessage = await signer.signMessage(nonce);
-			await fetch('/api/auth', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					userAddress,
-					signedMessage
-				})
-			}).then((res) => userToken.set(JSON.stringify(res)));
-		} catch (error) {
-			toast.error('Cancelling since you bitch denied the authorization request...');
-		}
+
+		let signer = (await get(Item.Signer)) as JsonRpcSigner;
+		const signedMessage = await signer.signMessage(nonce);
+
+		await fetch('/api/auth', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userAddress,
+				signedMessage
+			})
+		})
+			.then(async (res) => {
+				userToken.set((await res.json()).token);
+			})
+			.catch(() => {
+				console.log('network error occured');
+			});
+		console.log($userToken);
 	}
 
 	async function checkMetamaskInstalled() {

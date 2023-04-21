@@ -39,7 +39,6 @@ export const actions: Actions = {
 		if (!userAddress) {
 			throw error(500, 'No user data');
 		}
-		console.log('user data: ' + userAddress);
 
 		// set cookie
 		if (!cookies.get('metamask_address')) {
@@ -56,7 +55,6 @@ export const actions: Actions = {
 			.catch((err) => {
 				throw error(500, 'Could not retrieve user from db');
 			});
-		console.log('user from db: ' + user);
 
 		/* create new user if he is not registered yet and return nonce to frontend */
 		let nonce;

@@ -7,7 +7,11 @@ import { JWT_SECRET } from '$env/static/private';
 // TODO: finish user authentication
 export const POST: RequestHandler = async ({ request }) => {
 	// get data
-	const { signed, userAddress } = await request.json();
+	const { signedMessage, userAddress } = await request.json();
+	
+	if(!(signedMessage && userAddress)) {
+		throw error(500, "something went wrong")
+	}
 
 	// get user
 	const user = await prisma.user
@@ -21,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 
 	// verify signature
-	if (ethers.verifyMessage(user!.nonce, signed).toLowerCase() !== userAddress) {
+	if (ethers.verifyMessage(user!.nonce, signedMessage).toLowerCase() !== userAddress) {
 		return new Response('Invalid signature', { status: 401 });
 	}
 
@@ -43,7 +47,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		JWT_SECRET,
 		{ expiresIn: '6h' }
 	);
-	console.log(token);
 
 	const response = {
 		token: `Bearer ${token}`,
