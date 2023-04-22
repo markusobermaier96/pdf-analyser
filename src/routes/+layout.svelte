@@ -22,7 +22,7 @@
 	const navigation = [
 		{
 			name: 'Home',
-			href: '/#'
+			href: '/'
 		},
 		{
 			name: 'About',

@@ -7,6 +7,7 @@
 	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
 
 	let loading = writable(false);
+	let blocked = writable(false);
 	let query = '';
 	let chatMessages: ChatCompletionRequestMessage[] = [];
 	let answer = '';
@@ -29,6 +30,12 @@
 	// handle form submission
 	const handleSubmit = async () => {
 		if (!$userToken) {
+			chatMessages = [
+				...chatMessages,
+				{ role: 'assistant', content: 'It seems that you are not logged in. Please do that first.' }
+			];
+			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
+			blocked.set(!!!$userToken);
 			return;
 		}
 
@@ -109,7 +116,7 @@
 			<div class="relative">
 				<form method="POST" on:submit|preventDefault={handleSubmit}>
 					<textarea
-						disabled={$loading}
+						disabled={$loading || $blocked}
 						bind:value={query}
 						rows={1}
 						maxLength={512}
@@ -146,6 +153,11 @@
 		</div>
 	</main>
 </div>
+
+<!-- ------------------------------ -->
+<svelte:head>
+	<title>Home • PDF Analyser</title>
+</svelte:head>
 
 <style>
 	textarea:disabled {
@@ -210,9 +222,3 @@
 		}
 	}
 </style>
-
-
-<!-- ------------------------------ -->
-<svelte:head>
-    <title>Home • PDF Analyser</title> 
-</svelte:head>
