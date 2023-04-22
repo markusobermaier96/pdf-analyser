@@ -110,7 +110,7 @@
 									cancel();
 								});
 							return async ({ update }) => {
-								update();
+								await update();
 								metamaskPending.set(false);
 								await signNonce()
 									.then((_) => {
