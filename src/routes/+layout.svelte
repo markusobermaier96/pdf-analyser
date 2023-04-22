@@ -124,6 +124,7 @@
 						}}
 					>
 						<button
+							id="auth-button"
 							type="submit"
 							disabled={$metamaskPending}
 							class="btn {!$isMetamaskInstalled ? 'btn-disabled cursor-not-allowed' : ''}"

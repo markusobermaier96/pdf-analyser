@@ -13,3 +13,6 @@ vite.config.ts.timestamp-*
 prisma/dev.sqlite
 
 docker-data
+/test-results/
+/playwright-report/
+/playwright/.cache/

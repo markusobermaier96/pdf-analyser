@@ -211,3 +211,9 @@
 		}
 	}
 </style>
+
+
+<!-- ------------------------------ -->
+<svelte:head>
+    <title>Home • PDF Analyser</title> 
+</svelte:head>

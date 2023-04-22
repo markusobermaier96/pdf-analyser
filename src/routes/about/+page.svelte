@@ -51,3 +51,8 @@
 		@apply text-center space-y-2 border border-black rounded shadow-lg p-7;
 	}
 </style>
+
+<!-- ------------------------------ -->
+<svelte:head>
+    <title>About • PDF Analyser</title> 
+</svelte:head>
