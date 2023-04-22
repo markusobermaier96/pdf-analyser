@@ -4,7 +4,6 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '$env/static/private';
 
-// TODO: finish user authentication
 export const POST: RequestHandler = async ({ request }) => {
 	// get data
 	const { signedMessage, userAddress } = await request.json();

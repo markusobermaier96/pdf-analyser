@@ -105,7 +105,6 @@
 		</div>
 
 		<!-- User Input -->
-		{$userToken}
 		<div class="center">
 			<div class="relative">
 				<form method="POST" on:submit|preventDefault={handleSubmit}>
