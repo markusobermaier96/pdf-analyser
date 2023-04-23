@@ -1,20 +1,36 @@
 import { writable } from 'svelte/store';
+import type { ChatCompletionRequestMessage, ChatCompletionResponseMessageRoleEnum } from 'openai';
+
+interface Message extends ChatCompletionRequestMessage {
+	err?: boolean;
+}
 
 interface MessageStore {
-	messages: {
-		message: string;
-		type: 'apiMessage' | 'userMessage';
-		err?: boolean;
-	}[];
-	history: [string, string][];
+	messages: Message[];
 }
 
 export const messageStore = writable<MessageStore>({
 	messages: [
 		{
-			message: 'What would you like to know?',
-			type: 'apiMessage'
+			content: 'Hi, I am your pdf analysis assistant. How can I help you?',
+			role:  'assistant',
 		}
 	],
-	history: []
 });
+
+export const appendMessage = (content: string, role: ChatCompletionResponseMessageRoleEnum, err?: boolean) => {
+	messageStore.update((store) => {
+		return {
+			...store,
+			messages: [
+				...store.messages,
+				{
+					content,
+					role,
+					err
+				}
+			]
+		};
+	});
+};
+

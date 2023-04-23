@@ -5,11 +5,11 @@
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
 	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
+	import { appendMessage, messageStore } from '@lib/store/messageStore';
 
 	let loading = writable(false);
 	let blocked = writable(false);
 	let query = '';
-	let chatMessages: ChatCompletionRequestMessage[] = [];
 	let answer = '';
 
 	// scroll to bottom function
@@ -30,10 +30,7 @@
 	// handle form submission
 	const handleSubmit = async () => {
 		if (!$userToken) {
-			chatMessages = [
-				...chatMessages,
-				{ role: 'assistant', content: 'It seems that you are not logged in. Please do that first.' }
-			];
+			appendMessage('It seems that you are not logged in. Please do that first.', "assistant")
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
 			userToken.subscribe((value) => {
 				blocked.set(!value);
@@ -48,7 +45,7 @@
 			return;
 		}
 
-		chatMessages = [...chatMessages, { role: 'user', content: query }];
+		appendMessage(query, "user")
 
 		loading.set(true);
 
@@ -56,7 +53,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ messages: chatMessages })
+			payload: JSON.stringify({ messages: $messageStore.messages })
 		});
 		eventSource.addEventListener('error', handleError);
 
@@ -72,7 +69,7 @@
 				} */
 
 				const completionResponse = JSON.parse(e.data);
-				chatMessages = [...chatMessages, { role: 'assistant', content: completionResponse.text }];
+				appendMessage(completionResponse.text, "assistant")
 				loading.set(false);
 				/* const [{ delta }] = completionResponse.choices;
 
@@ -96,17 +93,13 @@
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
 			<div class="w-full h-full overflow-y-scroll rounded-lg shadow-md">
-				<ChatMessage
-					role="assistant"
-					content="Hello, what would you like to know about the document?"
-				/>
 				{#if !$isMetamaskInstalled}
 					<ChatMessage
 						role="assistant"
 						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
 					/>
 				{/if}
-				{#each chatMessages as { role, content }, i}
+				{#each $messageStore.messages as { role, content }, i}
 					<ChatMessage {role} {content} />
 				{/each}
 				<div class="" bind:this={scrollToDiv} />
