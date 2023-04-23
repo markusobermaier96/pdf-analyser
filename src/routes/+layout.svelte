@@ -53,10 +53,7 @@
 				userAddress,
 				signedMessage
 			})
-		}).then(async (res) => {
-			userToken.set((await res.json()).token);
 		});
-		//console.log($userToken);
 	}
 
 	async function checkMetamaskInstalled() {
@@ -98,15 +95,15 @@
 					<form
 						action="/auth?/login"
 						method="POST"
-						use:enhance={async ({ form, data, action, cancel, submitter }) => {
+						use:enhance={async (event) => {
 							metamaskPending.set(true);
 							await $ethereum
 								?.request({
 									method: 'eth_requestAccounts'
 								})
-								.then(() => data.set('user', $ethereum?.selectedAddress ?? ''))
+								.then(() => event.data.set('user', $ethereum?.selectedAddress ?? ''))
 								.catch(() => {
-									cancel();
+									event.cancel();
 								});
 							return async ({ update }) => {
 								await update();
@@ -115,10 +112,13 @@
 									.then(() => {
 										toast.success('Logged in');
 									})
-									.catch(() => {
-										toast.error('Log in denied');
+									.catch((err) => {
+										console.log(err);
 									});
 								await update();
+								if (data.token) {
+									userToken.set(data.token);
+								}
 							};
 						}}
 					>
