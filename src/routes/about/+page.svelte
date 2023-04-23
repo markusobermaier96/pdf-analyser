@@ -1,11 +1,19 @@
 <script lang="ts">
+	import { dataLength } from 'ethers';
+	import { onMount } from 'svelte';
 	import Youtube from 'svelte-youtube-embed';
+
+	let mounted = false;
+
+	onMount(() => (mounted = true));
 </script>
 
 <div class="text-xl lg:w-1/2 self-center mt-8 p-5">
-	<div class="">
-		<!-- <Youtube id="YVgfHZMFFFQ" /> -->
-	</div>
+	{#if mounted}
+		<div>
+			<Youtube id="YVgfHZMFFFQ" />
+		</div>
+	{/if}
 
 	<div class="my-6" />
 	<ul class="space-y-6">

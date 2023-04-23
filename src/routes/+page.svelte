@@ -30,7 +30,7 @@
 	// handle form submission
 	const handleSubmit = async () => {
 		if (!$userToken) {
-			appendMessage('It seems that you are not logged in. Please do that first.', "assistant")
+			appendMessage('It seems that you are not logged in. Please do that first.', 'assistant');
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
 			userToken.subscribe((value) => {
 				blocked.set(!value);
@@ -45,43 +45,46 @@
 			return;
 		}
 
-		appendMessage(query, "user")
+		appendMessage(query, 'user');
 
 		loading.set(true);
 
-		const eventSource = new SSE('/api/chat', {
+		const eventSource = new SSE('/api/chatexample', {
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			payload: JSON.stringify({ messages: $messageStore.messages })
 		});
 		eventSource.addEventListener('error', handleError);
-
 		eventSource.addEventListener('message', (e) => {
+			console.log(e.data);
+		});
+
+		/* eventSource.addEventListener('message', (e) => {
 			scrollToBottom();
 			try {
 				console.log(e.data);
-				/* if (e.data.text === '') {
+				if (e.data.text === '') {
 					loading.set(false);
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }];
 					answer = '';
 					return;
-				} */
+				}
 
 				const completionResponse = JSON.parse(e.data);
-				appendMessage(completionResponse.text, "assistant")
+				appendMessage(completionResponse.text, 'assistant');
 				loading.set(false);
-				/* const [{ delta }] = completionResponse.choices;
+				const [{ delta }] = completionResponse.choices;
 
 				console.log(completionResponse);
 				if (delta.content) {
 					answer = (answer ?? '') + delta.content;
-				} */
+				}
 				return;
 			} catch (err) {
 				handleError(err);
 			}
-		});
+		}); */
 		eventSource.stream();
 		scrollToBottom();
 	};
@@ -120,11 +123,9 @@
 						placeholder={$loading ? 'Waiting for response...' : 'What is this pdf about?'}
 						class="relative w-[75vw] border border-gray-200 rounded-lg outline-none text-lg px-8 py-4"
 						on:keydown={(event) => {
-							if (event.key === 'Enter' && !event.shiftKey) {
+							if (event.key === 'Enter') {
 								event.preventDefault();
 								document.getElementById('formbutton')?.click();
-							} else if (event.key === 'Enter') {
-								event.preventDefault();
 							}
 						}}
 					/>

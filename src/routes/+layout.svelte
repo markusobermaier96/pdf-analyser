@@ -43,7 +43,6 @@
 
 		let signer = (await get(Item.Signer)) as JsonRpcSigner;
 		const signedMessage = await signer.signMessage(nonce);
-
 		await fetch('/api/auth', {
 			method: 'POST',
 			headers: {
@@ -109,11 +108,13 @@
 								await update();
 								metamaskPending.set(false);
 								await signNonce()
-									.then(() => {
-										toast.success('Logged in');
-									})
+									.then(() => toast.success('Logged in'))
 									.catch((err) => {
-										console.log(err);
+										if (err.reason == 'rejected') {
+											toast.error('Login request rejected');
+										} else {
+											toast.error('Unknown Error occured');
+										}
 									});
 								await update();
 								if (data.token) {
