@@ -35,7 +35,9 @@
 				{ role: 'assistant', content: 'It seems that you are not logged in. Please do that first.' }
 			];
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
-			blocked.set(!!!$userToken);
+			userToken.subscribe((value) => {
+				blocked.set(!value);
+			});
 			return;
 		}
 

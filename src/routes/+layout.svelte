@@ -14,6 +14,9 @@
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
+		if (data.token) {
+			userToken.set(data.token);
+		}
 		await checkMetamaskInstalled().then(() => {
 			ethereum.set(window.ethereum);
 		});
@@ -50,14 +53,10 @@
 				userAddress,
 				signedMessage
 			})
-		})
-			.then(async (res) => {
-				userToken.set((await res.json()).token);
-			})
-			.catch(() => {
-				console.log('network error occured');
-			});
-		console.log($userToken);
+		}).then(async (res) => {
+			userToken.set((await res.json()).token);
+		});
+		//console.log($userToken);
 	}
 
 	async function checkMetamaskInstalled() {
@@ -97,7 +96,7 @@
 					<User />
 				{:else}
 					<form
-						action="?/authenticate"
+						action="/auth?/login"
 						method="POST"
 						use:enhance={async ({ form, data, action, cancel, submitter }) => {
 							metamaskPending.set(true);
@@ -106,20 +105,20 @@
 									method: 'eth_requestAccounts'
 								})
 								.then(() => data.set('user', $ethereum?.selectedAddress ?? ''))
-								.catch((err) => {
+								.catch(() => {
 									cancel();
 								});
 							return async ({ update }) => {
 								await update();
 								metamaskPending.set(false);
 								await signNonce()
-									.then((_) => {
+									.then(() => {
 										toast.success('Logged in');
 									})
-									.catch((err) => {
-										console.log(err);
-										toast.error(err);
+									.catch(() => {
+										toast.error('Log in denied');
 									});
+								await update();
 							};
 						}}
 					>
@@ -137,7 +136,7 @@
 		</div>
 	</header>
 
-	<main class="flex w-full flex-1 flex-col overflow-hidden">
+	<main class="flex w-full flex-1 flex-col">
 		<slot />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">

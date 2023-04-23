@@ -4,7 +4,7 @@
 
 <div class="text-xl lg:w-1/2 self-center mt-8 p-5">
 	<div class="">
-		<Youtube id="YVgfHZMFFFQ" />
+		<!-- <Youtube id="YVgfHZMFFFQ" /> -->
 	</div>
 
 	<div class="my-6" />
@@ -42,6 +42,11 @@
 	</ul>
 </div>
 
+<!-- ------------------------------ -->
+<svelte:head>
+	<title>About • PDF Analyser</title>
+</svelte:head>
+
 <style lang="postcss">
 	.outer {
 		@apply border border-black rounded shadow-lg p-7;
@@ -51,8 +56,3 @@
 		@apply text-center space-y-2 border border-black rounded shadow-lg p-7;
 	}
 </style>
-
-<!-- ------------------------------ -->
-<svelte:head>
-    <title>About • PDF Analyser</title> 
-</svelte:head>

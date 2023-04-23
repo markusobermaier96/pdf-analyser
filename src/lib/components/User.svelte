@@ -1,9 +1,18 @@
 <script>
+	import { enhance } from '$app/forms';
 	import { userToken } from '@lib/store/globalStore';
 </script>
 
 <div class="self-center">
-	<button class="btn btn-square btn-info" on:click={() => userToken.set('')}>
-		<i class="fa-solid fa-right-to-bracket" />
-	</button>
+	<form
+		action="/auth?/logout"
+		method="POST"
+		use:enhance={async (event) => {
+			userToken.set('');
+		}}
+	>
+		<button class="btn btn-square btn-info">
+			<i class="fa-solid fa-right-to-bracket" />
+		</button>
+	</form>
 </div>
