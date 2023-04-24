@@ -121,7 +121,7 @@
 						id="userInput"
 						name="userInput"
 						placeholder={$loading ? 'Waiting for response...' : 'What is this pdf about?'}
-						class="relative w-[75vw] border border-gray-200 rounded-lg outline-none text-lg px-8 py-4"
+						class="relative w-[75vw] border border-gray-200 rounded-lg outline-none text-lg px-8 py-4 resize-none"
 						on:keydown={(event) => {
 							if (event.key === 'Enter') {
 								event.preventDefault();
