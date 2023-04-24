@@ -1,14 +1,16 @@
 import { writable } from 'svelte/store';
 import type { ChatCompletionRequestMessage, ChatCompletionResponseMessageRoleEnum } from 'openai';
 
-interface Message extends ChatCompletionRequestMessage {
+/* interface Message extends ChatCompletionRequestMessage {
 	err?: boolean;
 }
 
 interface MessageStore {
 	messages: Message[];
-}
+} */
 
+
+/* 
 export const messageStore = writable<MessageStore>({
 	messages: [
 		{
@@ -16,9 +18,9 @@ export const messageStore = writable<MessageStore>({
 			role:  'assistant',
 		}
 	],
-});
+}); */
 
-export const appendMessage = (content: string, role: ChatCompletionResponseMessageRoleEnum, err?: boolean) => {
+/* export const appendMessage = (content: string, role: ChatCompletionResponseMessageRoleEnum, err?: boolean) => {
 	messageStore.update((store) => {
 		return {
 			...store,
@@ -32,5 +34,21 @@ export const appendMessage = (content: string, role: ChatCompletionResponseMessa
 			]
 		};
 	});
-};
+}; */
 
+export const messageStore = writable<ChatCompletionRequestMessage[]>([{
+	content: 'Hi, I am your pdf analysis assistant. How can I help you?',
+	role:  'assistant',
+}])
+
+export const appendMessage = (content: string, role: ChatCompletionResponseMessageRoleEnum) => {
+	messageStore.update((store) => {
+		return [
+			...store,
+			{
+				content,
+				role
+			}
+		];
+	});
+}

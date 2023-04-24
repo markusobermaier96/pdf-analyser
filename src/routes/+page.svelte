@@ -53,7 +53,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ messages: $messageStore.messages })
+			payload: JSON.stringify({ messages: $messageStore })
 		});
 		eventSource.addEventListener('error', handleError);
 		eventSource.addEventListener('message', (e) => {
@@ -102,7 +102,7 @@
 						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
 					/>
 				{/if}
-				{#each $messageStore.messages as { role, content }, i}
+				{#each $messageStore as { role, content }, i}
 					<ChatMessage {role} {content} />
 				{/each}
 				<div class="" bind:this={scrollToDiv} />
