@@ -1,32 +1,28 @@
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ request, setHeaders }) => {
-    setHeaders({
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'text/event-stream',
-        'Connection': 'keep-alive',
-    });
+  setHeaders({
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive',
+  });
 
-    const delay = 2000; // 2 seconds
+  const sleep = (maxMs: number) => new Promise(resolve => setTimeout(resolve, Math.random() * maxMs));
 
-    const stream = new ReadableStream({
-      start(controller) {
-        let i = 0;
-    
-        const interval = setInterval(() => {
-          i++;
-          if (i > 10) {
-            clearInterval(interval);
-            controller.close();
-            return;
-          }
-    
-          controller.enqueue(new TextEncoder().encode(`event: my-event\n`));
-          controller.enqueue(new TextEncoder().encode(`data: message: 'hiiii'\n\n`));
-        }, delay);
-      },
-    });
-    
-    return new Response(stream);
-    
+  async function sendData(controller: ReadableStreamDefaultController, data: string) {
+    controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
+  };
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i < 20; i++) {
+        sendData(controller, "You are dumb and i cant help you. ");
+        await sleep(300);
+      }
+      sendData(controller, "[DONE]");
+    }
+  });
+
+  return new Response(stream);
+
 };

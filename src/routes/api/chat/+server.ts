@@ -6,8 +6,9 @@ import { PineconeStore } from 'langchain/vectorstores';
 import type { ChatCompletionRequestMessage } from 'openai';
 import { makeChain } from '@lib/utils/makechain-free';
 import type { RequestHandler } from './$types';
+import { error } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	const reqMessages: ChatCompletionRequestMessage[] = await request
 		.json()
 		.then((data) => {
@@ -16,14 +17,10 @@ export const POST: RequestHandler = async ({ request }) => {
 		.catch(() => {
 			throw new Error('No request data');
 		});
-	console.log('step 1: get user input');
-	console.log(reqMessages);
 
 	const index = pinecone.Index(PINECONE_INDEX_NAME);
-	console.log('step 2: get Pineconde index');
-	console.log(index);
 
-	/* create vectorstore*/
+	/* get vectorstore*/
 	const vectorStore = await PineconeStore.fromExistingIndex(
 		new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
 		{
@@ -32,45 +29,36 @@ export const POST: RequestHandler = async ({ request }) => {
 			namespace: PINECONE_NAME_SPACE
 		}
 	);
-	console.log('step 3: get vectorstore');
-	console.log(vectorStore);
 
-	// create stream writer
-	const writeStream = (data: any) => {
-		const stream = new ReadableStream({
-			start(controller) {
-				controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
-			}
-		});
-		return stream;
+	async function sendData (controller: ReadableStreamDefaultController, data: string) {;
+		controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
 	};
 
-	// create chain with stream writer
+	console.log("so far so good")
 	const chain = makeChain(vectorStore, (token: string) => {
-		const data = { data: token };
-		return writeStream(data);
+		console.log(token)
+		//sendData(controller, token)
 	});
-	console.log('step 4: make chain');
-	console.log(chain);
+	// Ask a question
+	/* const data = await chain.call({
+		question: reqMessages[reqMessages.length - 1].content,
+		chat_history: reqMessages || []
+	}).catch(err => {
+		console.log(err)
+		throw error(500, "Too many requests. Exceeded API limit")
+	}); */
 
-	try {
-		// Ask a question
-		const response = await chain.call({
-			question: reqMessages[reqMessages.length - 1].content,
-			chat_history: reqMessages
+	const stream = new ReadableStream({
+		async start(controller) {
+			
+		}
+	});
+
+	setHeaders({
+		'Cache-Control': 'no-cache',
+		'Content-Type': 'text/event-stream',
+		'Connection': 'keep-alive',
 		});
 
-		// Send the response through an SSE stream
-		const stream = writeStream(response);
-
-		return new Response(stream, {
-			headers: {
-				'Content-Type': 'text/event-stream'
-			}
-		});
-	} catch (err) {
-		return new Response('Network error occured', { status: 500 });
-	} finally {
-		console.log('done');
-	}
+	return new Response(stream);
 };

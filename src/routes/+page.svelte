@@ -6,12 +6,11 @@
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
 	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
+	import { is_empty } from 'svelte/internal';
+	import mechanicalClick from '@lib/assets/sounds/mechanical_click.mp3';
 
 	let loading = writable(false);
 	let blocked = writable(false);
-	let query = '';
-	let answer = '';
-
 	// scroll to bottom function
 	let scrollToDiv: HTMLDivElement;
 	function scrollToBottom() {
@@ -23,12 +22,13 @@
 	// handle error function
 	function handleError<T>(err: T) {
 		loading.set(false);
-		query = '';
-		toast.error(err.data); // <= should not bitch around, it works
+		$messageStore.query = '';
+		toast.error(JSON.parse(err.data).message);
 	}
 
 	// handle form submission
 	const handleSubmit = async () => {
+		// first checks
 		if (!$userToken) {
 			appendMessage('It seems that you are not logged in. Please do that first.', 'assistant');
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
@@ -37,18 +37,23 @@
 			});
 			return;
 		}
-
-		query = query.trim().replaceAll('\n', ' ');
-
-		if (!query) {
+		if (!$messageStore.query) {
 			toast.error('Please input a question.');
 			return;
 		}
 
-		appendMessage(query, 'user');
+		// then prepares query
+		let query = $messageStore.query.trim().replaceAll('\n', ' ');
+		$messageStore.query = undefined;
 
+		// append query to message cloud
+		appendMessage(query, 'user');
 		loading.set(true);
 
+		// initialized the pending
+		messageStore.update((state) => ({ ...state, pending: '' }));
+
+		// starts the Server Sent Events
 		const eventSource = new SSE('/api/chatexample', {
 			headers: {
 				'Content-Type': 'application/json'
@@ -57,34 +62,26 @@
 		});
 		eventSource.addEventListener('error', handleError);
 		eventSource.addEventListener('message', (e) => {
-			console.log(e.data);
-		});
-
-		/* eventSource.addEventListener('message', (e) => {
 			scrollToBottom();
 			try {
-				console.log(e.data);
-				if (e.data.text === '') {
+				if (JSON.parse(e.data) === '[DONE]') {
+					appendMessage($messageStore.pending!, 'assistant');
 					loading.set(false);
-					chatMessages = [...chatMessages, { role: 'assistant', content: answer }];
-					answer = '';
 					return;
 				}
 
-				const completionResponse = JSON.parse(e.data);
-				appendMessage(completionResponse.text, 'assistant');
-				loading.set(false);
-				const [{ delta }] = completionResponse.choices;
+				const data = JSON.parse(e.data);
+				messageStore.update((state) => ({
+					...state,
+					pending: (state.pending ?? '') + data
+				}));
 
-				console.log(completionResponse);
-				if (delta.content) {
-					answer = (answer ?? '') + delta.content;
-				}
-				return;
+				const audio = new Audio(mechanicalClick);
+				audio.play();
 			} catch (err) {
 				handleError(err);
 			}
-		}); */
+		});
 		eventSource.stream();
 		scrollToBottom();
 	};
@@ -102,9 +99,12 @@
 						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
 					/>
 				{/if}
-				{#each $messageStore as { role, content }, i}
+				{#each $messageStore.messages as { role, content }, i}
 					<ChatMessage {role} {content} />
 				{/each}
+				{#if $messageStore.pending}
+					<ChatMessage role="assistant" content={$messageStore.pending} />
+				{/if}
 				<div class="" bind:this={scrollToDiv} />
 			</div>
 		</div>
@@ -115,7 +115,7 @@
 				<form method="POST" on:submit|preventDefault={handleSubmit}>
 					<textarea
 						disabled={$loading || $blocked}
-						bind:value={query}
+						bind:value={$messageStore.query}
 						rows={1}
 						maxLength={512}
 						id="userInput"
