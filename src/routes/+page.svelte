@@ -7,7 +7,7 @@
 	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
 	import { is_empty } from 'svelte/internal';
-	import mechanicalClick from '@lib/assets/sounds/mechanical_click.mp3';
+	import mechanicalClick from '@lib/assets/sounds/mechanical-click3.mp3';
 
 	let loading = writable(false);
 	let blocked = writable(false);
@@ -30,7 +30,7 @@
 	const handleSubmit = async () => {
 		// first checks
 		if (!$userToken) {
-			appendMessage('It seems that you are not logged in. Please do that first.', 'assistant');
+			appendMessage('It seems that you are not logged in. Please do that first.', 'system');
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
 			userToken.subscribe((value) => {
 				blocked.set(!value);
