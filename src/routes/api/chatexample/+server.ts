@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 
   const stream = new ReadableStream({
     async start(controller) {
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < 40; i++) {
         sendData(controller, "You are dumb and i cant help you. ");
         await sleep(300);
       }
