@@ -4,11 +4,12 @@
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { ethereum, isMetamaskInstalled, userToken } from '@lib/store/globalStore';
+	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
+	import { userToken, user } from '@lib/store/userStore';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { Item, get } from '@lib/utils/metamask';
-	import type { BrowserProvider, JsonRpcSigner } from 'ethers';
+	import type { JsonRpcSigner } from 'ethers';
 	import User from '@lib/components/User.svelte';
 	import toast from 'svelte-french-toast';
 
@@ -16,6 +17,9 @@
 	onMount(async () => {
 		if (data.token) {
 			userToken.set(data.token);
+		}
+		if (data.user) {
+			user.set(JSON.parse(data.user));
 		}
 		await checkMetamaskInstalled().then(() => {
 			ethereum.set(window.ethereum);
@@ -43,7 +47,8 @@
 
 		let signer = (await get(Item.Signer)) as JsonRpcSigner;
 		const signedMessage = await signer.signMessage(nonce);
-		await fetch('/api/auth', {
+
+		await fetch('/auth', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -52,6 +57,9 @@
 				userAddress,
 				signedMessage
 			})
+		}).then(async (res) => {
+			const { updatedUser, msg } = await res.json();
+			user.set(updatedUser);
 		});
 	}
 

@@ -1,6 +1,6 @@
 <script>
 	import { enhance } from '$app/forms';
-	import { userToken } from '@lib/store/globalStore';
+	import { userToken } from '@lib/store/userStore';
 </script>
 
 <div class="self-center">

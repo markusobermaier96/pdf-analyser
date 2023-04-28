@@ -3,7 +3,7 @@
 	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
 
-	const handleSubmit: SubmitFunction = async ({ form, data, action, cancel, submitter }) => {
+	const handleSubmit: SubmitFunction = async ({ data, cancel }) => {
 		if (
 			!(
 				data.has('pdf') &&

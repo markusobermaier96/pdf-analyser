@@ -12,21 +12,17 @@ interface MessageStore {
 	role:  'assistant',
 }]) */
 
-export const messageStore = writable<MessageStore> ({
+export const messageStore = writable<MessageStore>({
 	messages: [
 		{
-
 			content: 'Hi, I am your pdf analysis assistant. How can I help you?',
-			role:  'assistant',
-
+			role: 'assistant'
 		}
-
-	],
-
+	]
 });
 
 export const appendMessage = (content: string, role: ChatCompletionResponseMessageRoleEnum) => {
-	messageStore.update(store => {
+	messageStore.update((store) => {
 		store.messages.push({
 			content,
 			role
@@ -34,5 +30,4 @@ export const appendMessage = (content: string, role: ChatCompletionResponseMessa
 		store.pending = undefined;
 		return store;
 	});
-
-}
+};

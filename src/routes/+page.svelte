@@ -1,12 +1,11 @@
 <script lang="ts">
-	import type { ChatCompletionRequestMessage } from 'openai';
 	import { writable } from 'svelte/store';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
-	import { isMetamaskInstalled, userToken } from '@lib/store/globalStore';
+	import { isMetamaskInstalled } from '@lib/store/globalStore';
+	import { userToken } from '@lib/store/userStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
-	import { is_empty } from 'svelte/internal';
 	import mechanicalClick from '@lib/assets/sounds/mechanical-click3.mp3';
 
 	let loading = writable(false);

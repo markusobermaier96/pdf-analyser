@@ -7,8 +7,8 @@ import { JWT_SECRET } from '$env/static/private';
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	// get data
 	const { signedMessage, userAddress } = await request.json();
-	console.log("signedMessage: " + signedMessage)
-	console.log("userAddress: " + userAddress)
+	console.log('signedMessage: ' + signedMessage);
+	console.log('userAddress: ' + userAddress);
 
 	if (!(signedMessage && userAddress)) {
 		throw error(500, 'something went wrong');
@@ -54,14 +54,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		expires: new Date(Date.now() + 6 * 60 * 60 * 1000),
 		path: '/'
 	});
+	cookies.set('user', JSON.stringify(updatedUser), {
+		// sets the cookie to expire in 6 hours
+		expires: new Date(Date.now() + 6 * 60 * 60 * 1000),
+		path: '/'
+	});
 
 	const response = {
-		token: `Bearer ${token}`,
-		user: {
-			updatedUser
-		},
 		msg: 'You are now logged in.'
 	};
 
-	return new Response();
+	return new Response(JSON.stringify(response));
 };

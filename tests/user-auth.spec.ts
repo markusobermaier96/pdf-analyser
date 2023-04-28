@@ -1,4 +1,4 @@
-import { chromium, test, expect, type Page, type Browser } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Authentication', () => {
 	test.beforeEach(async ({ page }) => {
