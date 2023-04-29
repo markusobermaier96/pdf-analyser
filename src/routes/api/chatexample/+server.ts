@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 
   const stream = new ReadableStream({
     async start(controller) {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 3; i++) {
         let arr = sentence.split(",");
         for (let j = 0; j < arr.length; j++) {
           await sleep(70, 300);
