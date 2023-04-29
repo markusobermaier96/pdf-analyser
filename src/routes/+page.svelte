@@ -36,6 +36,7 @@
 			});
 			return;
 		}
+		blocked.set(false)
 		if (!$messageStore.query) {
 			toast.error('Please input a question.');
 			return;

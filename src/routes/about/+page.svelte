@@ -19,16 +19,15 @@
 	<ul class="space-y-6">
 		<div class="font-bold flex justify-center bg-slate-100 p-2">Authentication process</div>
 		<ul class="inner">
-			<li>Log in with your Metamask account by clicking "Log in with Metamask"</li>
-			<li>This will also create your account, if you use the application the first time</li>
+			<li>Log in with your Metamask account</li>
+			<li>This will also create your account, if you use the application for the first time</li>
 			<li>To Log In to the application, you will be prompted with a "Sign" message</li>
 		</ul>
 		<br />
 		<div class="font-bold flex justify-center bg-slate-100 p-2">How to use the application</div>
 		<ul class="inner">
 			<li>
-				Upload a PDF file by clicking the "Upload" button and selecting the PDF from your local
-				disk.
+				Upload a PDF
 			</li>
 			<li>
 				Choose an option:
