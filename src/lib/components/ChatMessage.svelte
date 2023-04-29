@@ -1,19 +1,7 @@
 <script lang="ts">
-	import MarkdownIt from 'markdown-it';
+	//import MarkdownIt from 'markdown-it';
+	import { getMarkdownIt } from '@lib/utils/markdownit';
 	import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-	const md = new MarkdownIt({
-		linkify: true
-	});
-
-	md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
-		const aToken = tokens[idx];
-		const hrefIndex = aToken.attrIndex('href');
-		if (hrefIndex >= 0) {
-			aToken.attrPush(['class', `text-blue-500 after:content-['🔗']`]);
-			aToken.attrPush(['target', '_blank']);
-		}
-		return self.renderToken(tokens, idx, options);
-	};
 
 	export let role: ChatCompletionRequestMessageRoleEnum;
 	export let content: string;
@@ -45,5 +33,5 @@
 	{:else}
 		<img class="w-8 mr-4" src="bot-image.png" alt="bot-icon" />
 	{/if}
-	{@html md.render(content)}
+	{@html getMarkdownIt().render(content)}
 </div>
