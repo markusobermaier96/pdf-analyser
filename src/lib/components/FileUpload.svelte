@@ -15,9 +15,9 @@
 			cancel();
 			return;
 		}
-
+		data.append("publicAddress", publicAddress)
 		// confirm metamask transaction before upload
-		await sendTransaction()
+		/* await sendTransaction()
 			.then((val) => console.log(val))
 			.catch((err) => {
 				if (err.code === 4001) {
@@ -26,7 +26,7 @@
 
 				cancel();
 				return;
-			});
+			}); */
 
 		/* await confirmPayment()
 			.then(async (_) => {
@@ -48,6 +48,8 @@
 			update();
 		};
 	};
+
+	export let publicAddress: string;
 </script>
 
 <input type="checkbox" id="file-upload" class="modal-toggle" />

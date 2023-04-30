@@ -8,9 +8,9 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 			cookies.delete('metamask_address');
 		} */
 		if (cookies.get('user')) {
-			return { token: cookies.get('token'), user: cookies.get('user') };;
+			return { token: cookies.get('token'), user: cookies.get('user') };
 		}
-		return { token: cookies.get('token')};
+		return { token: cookies.get('token') };
 	} else if (cookies.get('metamask_address')) {
 		const user = await prisma.user
 			.findUnique({

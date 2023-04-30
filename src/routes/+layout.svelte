@@ -58,7 +58,7 @@
 				signedMessage
 			})
 		}).then(async (res) => {
-			const { updatedUser, msg } = await res.json();
+			const { updatedUser } = await res.json();
 			user.set(updatedUser);
 		});
 	}
@@ -70,8 +70,12 @@
 	}
 	export let data: PageData;
 </script>
-
-<FileUpload />
+<div>
+	{$user?.publicAddress}
+</div>
+{#if $user?.publicAddress}
+	<FileUpload publicAddress={$user.publicAddress}/>
+{/if}
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header>
 		<div class="flex h-16 border-b border-b-slate-200 py-4">
@@ -127,6 +131,10 @@
 								await update();
 								if (data.token) {
 									userToken.set(data.token);
+									console.log("user token was set to: " + data.token)
+								}
+								if (data.user) {
+									user.set(JSON.parse(data.user))
 								}
 							};
 						}}

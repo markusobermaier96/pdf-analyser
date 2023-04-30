@@ -26,9 +26,7 @@
 		<br />
 		<div class="font-bold flex justify-center bg-slate-100 p-2">How to use the application</div>
 		<ul class="inner">
-			<li>
-				Upload a PDF
-			</li>
+			<li>Upload a PDF</li>
 			<li>
 				Choose an option:
 				<ul class="font-light">

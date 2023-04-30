@@ -2,7 +2,7 @@
 	//import MarkdownIt from 'markdown-it';
 	import { getMarkdownIt } from '@lib/utils/markdownit';
 	import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-	import {fly, fade} from 'svelte/transition'
+	import { fly, fade } from 'svelte/transition';
 
 	export let role: ChatCompletionRequestMessageRoleEnum;
 	export let content: string;
@@ -13,10 +13,9 @@
 	'system'
 		? 'bg-orange-200 shadow-none'
 		: ''}"
-	transition:fade={{delay: 1}}
+	transition:fade={{ delay: 1 }}
 >
 	{#if role === 'user'}
-	
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="currentColor"

@@ -42,7 +42,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 	const token = jwt.sign(
 		{
-			_id: updatedUser.id,
 			address: updatedUser.publicAddress
 		},
 		JWT_SECRET,
