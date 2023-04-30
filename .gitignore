@@ -16,3 +16,4 @@ docker-data
 /test-results/
 /playwright-report/
 /playwright/.cache/
+.vercel
