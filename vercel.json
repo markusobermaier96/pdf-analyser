@@ -1,8 +1,9 @@
 {
-    "crons": [
-      {
-        "path": "/api/cron",
-        "schedule": "0 5 * * *"
-      }
-    ]
-  }
+	"regions": ["sfo1"],
+	"crons": [
+		{
+			"path": "/api/cron",
+			"schedule": "0 5 * * *"
+		}
+	]
+}

@@ -15,7 +15,7 @@
 			cancel();
 			return;
 		}
-		data.append("publicAddress", publicAddress)
+		data.append('publicAddress', publicAddress);
 		// confirm metamask transaction before upload
 		/* await sendTransaction()
 			.then((val) => console.log(val))

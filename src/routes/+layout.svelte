@@ -75,8 +75,9 @@
 	}
 	export let data: PageData;
 </script>
+
 {#if $user?.publicAddress}
-	<FileUpload publicAddress={$user.publicAddress}/>
+	<FileUpload publicAddress={$user.publicAddress} />
 {/if}
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header>
@@ -133,10 +134,10 @@
 								await update();
 								if (data.token) {
 									userToken.set(data.token);
-									console.log("user token was set to: " + data.token)
+									console.log('user token was set to: ' + data.token);
 								}
 								if (data.user) {
-									user.set(JSON.parse(data.user))
+									user.set(JSON.parse(data.user));
 								}
 							};
 						}}
