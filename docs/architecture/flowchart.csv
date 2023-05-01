@@ -18,4 +18,5 @@ id,step,shape,refs
 4,no,ellipse,2
 5,get index from vectorstore,rectangle,3
 6,pinecone,mxgraph.flowchart.database,4
-7,postgres,mxgraph.flowchart.database,4
+7,redis,mxgraph.flowchart.database,6
+8,postgres,mxgraph.flowchart.database,4
