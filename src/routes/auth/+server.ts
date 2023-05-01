@@ -3,12 +3,11 @@ import { ethers } from 'ethers';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '$env/static/private';
+import { prisma } from '@lib/server/prisma';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	// get data
 	const { signedMessage, userAddress } = await request.json();
-	console.log('signedMessage: ' + signedMessage);
-	console.log('userAddress: ' + userAddress);
 
 	if (!(signedMessage && userAddress)) {
 		throw error(500, 'something went wrong');

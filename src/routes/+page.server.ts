@@ -1,6 +1,7 @@
 import type { Actions } from './$types';
 import { error } from '@sveltejs/kit';
 import { generateHash } from '@lib/utils/genereateHash';
+import { prisma } from '@lib/server/prisma';
 
 export const actions: Actions = {
   upload: async ({ request }) => {

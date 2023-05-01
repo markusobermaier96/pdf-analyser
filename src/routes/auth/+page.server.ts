@@ -1,3 +1,4 @@
+import { prisma } from '@lib/server/prisma';
 import { error, type Actions } from '@sveltejs/kit';
 import crypto from 'crypto';
 

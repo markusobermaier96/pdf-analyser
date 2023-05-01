@@ -75,9 +75,6 @@
 	}
 	export let data: PageData;
 </script>
-<div>
-	{$user?.publicAddress}
-</div>
 {#if $user?.publicAddress}
 	<FileUpload publicAddress={$user.publicAddress}/>
 {/if}
