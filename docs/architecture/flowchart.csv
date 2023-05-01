@@ -1,0 +1,21 @@
+# label: %step%
+# style: shape=%shape%;fillColor=#000000;strokeColor=#ffffff;
+# namespace: csvimport-
+# connect: {"from":"refs", "to":"id", "invert":true, "style":"curved=0;endArrow=blockThin;endFill=1;"}
+# width: auto
+# height: auto
+# padding: 15
+# ignore: id,shape,fill,stroke,refs
+# nodespacing: 40
+# levelspacing: 100
+# edgespacing: 40
+# layout: auto
+## CSV starts under this line
+id,step,shape,refs
+1,upload pdf,rectangle,
+2,pdf exists?,rhombus,1
+3,yes,ellipse,2
+4,no,ellipse,2
+5,get index from vectorstore,rectangle,3
+6,postgres,mxgraph.flowchart.database,4
+7,pinecone,mxgraph.flowchart.database,4

@@ -1,0 +1,55 @@
+<mxfile host="65bd71144e">
+    <diagram id="hC1a2R9r_TvosJMqt2YY" name="Page-1">
+        <mxGraphModel dx="3027" dy="1960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <UserObject label="%component%" component="Habit Tracker HTML App" placeholders="1" id="22">
+                    <mxCell style="shape=mxgraph.aws4.mobile;fillColor=#ffe6cc;strokeColor=#d79b00;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-690" y="307.56822116558357" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <UserObject label="%component%" component="UI Assets" placeholders="1" id="23">
+                    <mxCell style="shape=mxgraph.aws4.s3;fillColor=#277116;strokeColor=#ffffff;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-524.5202707143931" y="140" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <UserObject label="%component%" component="User Authentication" placeholders="1" id="24">
+                    <mxCell style="shape=mxgraph.aws4.cognito;fillColor=#C7131F;strokeColor=#ffffff;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-512.4819594163162" y="307.5641526442307" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <UserObject label="%component%" component="API Gateway" placeholders="1" id="25">
+                    <mxCell style="shape=mxgraph.aws4.api_gateway;fillColor=#5A30B5;strokeColor=#ffffff;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-524.5202707143931" y="475.1283052884614" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <UserObject label="%component%" component="AWS Lambda" placeholders="1" id="26">
+                    <mxCell style="shape=mxgraph.aws4.lambda_function;fillColor=#277116;strokeColor=none;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-384.52027071439306" y="475.13237380981434" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <UserObject label="%component%" component="Database" placeholders="1" id="27">
+                    <mxCell style="shape=mxgraph.aws4.dynamodb;fillColor=#3334B9;strokeColor=#ffffff;verticalLabelPosition=bottom;aspect=fixed;" vertex="1" parent="1">
+                        <mxGeometry x="-244.52027071439306" y="475.1323268596941" width="80" height="80" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <mxCell id="28" value="" style="curved=0;endArrow=none;endFill=0;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="22" target="23">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="" style="curved=0;endArrow=none;endFill=0;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="22" target="24">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="" style="curved=0;endArrow=none;endFill=0;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="22" target="25">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="" style="curved=0;endArrow=none;endFill=0;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="25" target="26">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="" style="curved=0;endArrow=none;endFill=0;dashed=1;strokeColor=#6c8ebf;" edge="1" parent="1" source="26" target="27">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
