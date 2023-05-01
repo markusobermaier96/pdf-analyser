@@ -12,6 +12,11 @@
 	import type { JsonRpcSigner } from 'ethers';
 	import User from '@lib/components/User.svelte';
 	import toast from 'svelte-french-toast';
+	import type { Config } from '@sveltejs/adapter-vercel';
+
+	export const config: Config = {
+		runtime: 'nodejs18.x'
+	};
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
