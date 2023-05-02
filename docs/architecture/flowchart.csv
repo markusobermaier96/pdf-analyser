@@ -16,7 +16,12 @@ id,step,shape,refs
 2,pdf exists?,rhombus,1
 3,yes,ellipse,2
 4,no,ellipse,2
-5,get index from vectorstore,rectangle,3
-6,pinecone,mxgraph.flowchart.database,4
-7,redis,mxgraph.flowchart.database,6
-8,postgres,mxgraph.flowchart.database,4
+5,pinecone,mxgraph.flowchart.database,4
+6,redis,mxgraph.flowchart.database,5
+7,postgres,mxgraph.flowchart.database,4
+8,is cached?,rhombus,3
+9,yes,ellipse,8
+10,no,ellipse,8
+11,get index from vectorstore,rectangle,10
+12,write to cache,rectangle,11
+13,get vector from cache,rectangle,12

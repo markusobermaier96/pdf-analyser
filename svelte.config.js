@@ -15,6 +15,9 @@ const config = {
 		adapter: adapter({
 			target: 'node18'
 		}),
+		prisma: {
+			schema: process.env.NODE_ENV === 'production' ? 'prisma/schema.prisma' : 'prisma/dev_schema.prisma',
+		},
 		alias: {
 			'@lib': path.resolve('./src/lib')
 		}
