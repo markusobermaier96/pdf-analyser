@@ -7,20 +7,11 @@ import type { ChatCompletionRequestMessage } from 'openai';
 import { makeChain } from '@lib/utils/makechain-free';
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { selectedIndex } from '@lib/store/userStore';
 
 export const POST: RequestHandler = async ({ request, setHeaders }) => {
-	const data = await request.json()
-	/* const reqMessages: ChatCompletionRequestMessage[] = await request
-		.json()
-		.then((data) => {
-			return data.messages;
-		})
-		.catch(() => {
-			throw new Error('No request data');
-		}); */
-	const reqMessages: ChatCompletionRequestMessage[] = data.messages
-	const indexHash: string = data.indexHash
+	const data = await request.json();
+	const reqMessages: ChatCompletionRequestMessage[] = data.messages;
+	const indexHash: string = data.indexHash;
 
 	const index = pinecone.Index(indexHash);
 

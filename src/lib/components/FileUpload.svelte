@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { deserialize, enhance, type SubmitFunction } from '$app/forms';
+	import { enhance, type SubmitFunction } from '$app/forms';
 	import { selectedIndex } from '@lib/store/userStore';
 	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
-	import { page } from '$app/stores';
 
 	const handleSubmit: SubmitFunction = async ({ data, cancel }) => {
 		if (

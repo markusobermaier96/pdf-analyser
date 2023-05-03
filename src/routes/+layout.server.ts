@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 	if (token) {
 		if (user && hash) {
 			return { token: token, user: user, hash: hash };
-		} else if (user) { 
+		} else if (user) {
 			return { token: token, user: user };
 		}
 		return { token: token };

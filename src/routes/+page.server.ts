@@ -1,4 +1,4 @@
-import { generateHash, generateHashMaxLength } from '@lib/utils/genereateHash';
+import { generateHashMaxLength } from '@lib/utils/genereateHash';
 import { prisma } from '@lib/server/prisma';
 import { pinecone } from '@lib/utils/pinecone-client';
 import { error, type Actions } from '@sveltejs/kit';
@@ -21,17 +21,17 @@ export const actions: Actions = {
 		const buffer = await fileField.arrayBuffer();
 
 		// Generate the SHA-256 hash value of the uploaded file
-		const hash = await generateHashMaxLength(Buffer.from(buffer), MAX_HASH_LENGTH)
+		const hash = await generateHashMaxLength(Buffer.from(buffer), MAX_HASH_LENGTH);
 
 		// Check if a PdfFile with the same hash already exists
 		try {
-			const existingFile = await prisma.file.findUnique({ where: { hash } })
+			const existingFile = await prisma.file.findUnique({ where: { hash } });
 			if (!existingFile) {
 				await pinecone.createIndex({
 					createRequest: {
-					name: hash,
-					dimension: 1536,
-					},
+						name: hash,
+						dimension: 1536
+					}
 				});
 				await prisma.file.create({
 					data: {
@@ -41,14 +41,14 @@ export const actions: Actions = {
 						data: Buffer.from(buffer),
 						user: { connect: { publicAddress: publicAddress } }
 					}
-				})
+				});
 			}
 			if (!cookies.get('hash')) {
-				cookies.set('hash', hash)
+				cookies.set('hash', hash);
 			}
-			return { hash }
+			return { hash };
 		} catch (err) {
-			throw error(500, "Failed to reach db");
+			throw error(500, 'Failed to reach db');
 		}
 	}
 };
