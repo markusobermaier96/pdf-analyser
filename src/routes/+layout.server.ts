@@ -3,18 +3,22 @@ import { prisma } from '@lib/server/prisma';
 import { error } from '@sveltejs/kit';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-	if (cookies.get('token')) {
-		/* if (cookies.get('metamask_address')) {
-			cookies.delete('metamask_address');
-		} */
-		if (cookies.get('user')) {
-			return { token: cookies.get('token'), user: cookies.get('user') };
+	const token = cookies.get('token');
+	const user = cookies.get('user');
+	const metamaskAddress = cookies.get('metamask_address');
+	const hash = cookies.get('hash');
+
+	if (token) {
+		if (user && hash) {
+			return { token: token, user: user, hash: hash };
+		} else if (user) { 
+			return { token: token, user: user };
 		}
-		return { token: cookies.get('token') };
-	} else if (cookies.get('metamask_address')) {
+		return { token: token };
+	} else if (metamaskAddress) {
 		const user = await prisma.user
 			.findUnique({
-				where: { publicAddress: cookies.get('metamask_address') },
+				where: { publicAddress: metamaskAddress },
 				select: { nonce: true }
 			})
 			.catch(() => {

@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { enhance, type SubmitFunction } from '$app/forms';
+	import { deserialize, enhance, type SubmitFunction } from '$app/forms';
+	import { selectedIndex } from '@lib/store/userStore';
 	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
+	import { page } from '$app/stores';
 
 	const handleSubmit: SubmitFunction = async ({ data, cancel }) => {
 		if (
@@ -40,6 +42,9 @@
 
 		return async ({ result, update }) => {
 			if (result.type == 'success') {
+				if (result.data) {
+					selectedIndex.set(result.data.hash);
+				}
 				toast.success('Successfully uploaded file');
 				document.getElementById('modalClose')?.click();
 			} else {

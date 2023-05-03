@@ -9,3 +9,4 @@ interface User {
 
 export const user = writable<User | null>(null);
 export const userToken = writable<string | null>(null);
+export const selectedIndex = writable<string | null>(null);

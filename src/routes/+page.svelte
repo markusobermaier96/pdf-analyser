@@ -4,7 +4,7 @@
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
 	import { isMetamaskInstalled } from '@lib/store/globalStore';
-	import { userToken } from '@lib/store/userStore';
+	import { userToken, selectedIndex } from '@lib/store/userStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
 	import mechanicalClick from '@lib/assets/sounds/mechanical-click3.mp3';
 
@@ -37,6 +37,15 @@
 			return;
 		}
 		blocked.set(false);
+
+		// check for selected index
+		if (!$selectedIndex) {
+			toast.error(
+				'Please upload a pdf first or select a pdf from the list of available documents.'
+			);
+			return;
+		}
+
 		if (!$messageStore.query) {
 			toast.error('Please input a question.');
 			return;
@@ -58,7 +67,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ messages: $messageStore })
+			payload: JSON.stringify({ messages: $messageStore, indexHash: $selectedIndex })
 		});
 		eventSource.addEventListener('error', handleError);
 		eventSource.addEventListener('message', (e) => {

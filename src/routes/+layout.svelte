@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
-	import { userToken, user } from '@lib/store/userStore';
+	import { userToken, user, selectedIndex } from '@lib/store/userStore';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { Item, get } from '@lib/utils/metamask';
@@ -25,6 +25,9 @@
 		}
 		if (data.user) {
 			user.set(JSON.parse(data.user));
+		}
+		if (data.hash) {
+			selectedIndex.set(data.hash);
 		}
 		await checkMetamaskInstalled().then(() => {
 			ethereum.set(window.ethereum);
@@ -62,10 +65,10 @@
 				userAddress,
 				signedMessage
 			})
-		}).then(async (res) => {
+		}); /* .then(async (res) => {
 			const { updatedUser } = await res.json();
 			user.set(updatedUser);
-		});
+		}); */
 	}
 
 	async function checkMetamaskInstalled() {
@@ -79,6 +82,7 @@
 {#if $user?.publicAddress}
 	<FileUpload publicAddress={$user.publicAddress} />
 {/if}
+<div>{$selectedIndex}</div>
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header>
 		<div class="flex h-16 border-b border-b-slate-200 py-4">
