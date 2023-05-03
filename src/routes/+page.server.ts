@@ -25,9 +25,9 @@ export const actions: Actions = {
 
 		// Check if a PdfFile with the same hash already exists
 		try {
-			const existingFile = await prisma.file.findUnique({ where: { hash } });
-			if (!existingFile) {
-				await pinecone.createIndex({
+			// Check if index already exists (only create index if not)
+			if (!pinecone.list_indexes().includes(hash)) {
+			 await pinecone.createIndex({
 					createRequest: {
 						name: hash,
 						dimension: 1536
