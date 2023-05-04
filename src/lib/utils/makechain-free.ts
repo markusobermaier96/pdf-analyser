@@ -1,9 +1,11 @@
-import HF_ACCESS_TOKEN from '$env/static/private';
-import type { PineconeStore } from 'langchain/vectorstores';
-import { HuggingFaceInference } from 'langchain/llms';
-import { PromptTemplate, LLMChain } from 'langchain';
-import { ChatVectorDBQAChain, loadQAChain } from 'langchain/chains';
+import { PromptTemplate } from 'langchain';
+import { OPENAI_API_KEY, HF_ACCESS_TOKEN } from '$env/static/private';
 import { CallbackManager } from 'langchain/callbacks';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import type { PineconeStore } from 'langchain/vectorstores';
+import { HuggingFaceInference } from 'langchain/llms/hf';
+import type { BaseLanguageModel } from 'langchain/dist/base_language';
+import { ConversationalRetrievalQAChain } from 'langchain/dist/chains/conversational_retrieval_chain';
 
 /* Question answering over documents consists of four steps:
 
@@ -15,6 +17,11 @@ import { CallbackManager } from 'langchain/callbacks';
 
 4. Ask questions!
 */
+
+export enum ModelProvider {
+	OPENAI,
+	HF
+}
 
 const CONDENSE_PROMPT =
 	PromptTemplate.fromTemplate(`Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
@@ -37,7 +44,42 @@ Question: {question}
 Answer in Markdown:`
 );
 
-export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: string) => void) => {
+export const makeChain = (
+	modelProvider: ModelProvider,
+	vectorstore: PineconeStore,
+	onTokenStream: (token: string) => void
+) => {
+	let model: BaseLanguageModel;
+	if (modelProvider === ModelProvider.OPENAI) {
+		model = new ChatOpenAI({
+			temperature: 0,
+			openAIApiKey: OPENAI_API_KEY,
+			modelName: 'gpt-3.5-turbo',
+			maxRetries: 3,
+			streaming: true
+		});
+	} else {
+		model = new HuggingFaceInference({
+			model: 'gpt2',
+			apiKey: HF_ACCESS_TOKEN,
+			temperature: 0
+		});
+	}
+
+	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(), {
+		returnSourceDocuments: true,
+		callbacks: CallbackManager.fromHandlers({
+			async handleLLMNewToken(token) {
+				onTokenStream(token);
+				console.log(token);
+			}
+		}),
+		questionGeneratorTemplate: CONDENSE_PROMPT.template,
+		qaTemplate: QA_PROMPT.template
+	});
+};
+
+/* export const makeChain = (vectorstore, onTokenStream?: (token: string) => void) => {
 	const questionGenerator = new LLMChain({
 		llm: new HuggingFaceInference({ temperature: 1, model: 'gpt2' }),
 		prompt: CONDENSE_PROMPT
@@ -65,3 +107,4 @@ export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: st
 		k: 2 //number of source documents to return
 	});
 };
+ */

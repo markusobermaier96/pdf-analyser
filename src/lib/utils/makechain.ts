@@ -1,5 +1,5 @@
 import { OpenAIChat } from 'langchain/llms';
-import { LLMChain, ChatVectorDBQAChain, loadQAChain } from 'langchain/chains';
+import { LLMChain, ConversationalRetrievalQAChain, loadQAChain } from 'langchain/chains';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { PromptTemplate } from 'langchain/prompts';
 import { CallbackManager } from 'langchain/callbacks';
@@ -49,7 +49,7 @@ export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: st
 		{ prompt: QA_PROMPT }
 	);
 
-	return new ChatVectorDBQAChain({
+	return new ConversationalRetrievalQAChain({
 		vectorstore,
 		combineDocumentsChain: docChain,
 		questionGeneratorChain: questionGenerator,

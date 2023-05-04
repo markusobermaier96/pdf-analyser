@@ -10,7 +10,7 @@ async function initPinecone() {
 		const pinecone = new PineconeClient();
 
 		await pinecone.init({
-			environment: PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
+			environment: PINECONE_ENVIRONMENT ?? '',
 			apiKey: PINECONE_API_KEY ?? ''
 		});
 

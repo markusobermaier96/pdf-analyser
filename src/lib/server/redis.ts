@@ -1,14 +1,14 @@
 import { createClient } from 'redis';
-import { config } from '../config.server';
+import { config } from '../config/server';
 
-const client = createClient({
+const redisClient = createClient({
 	url: config.REDIS_URL
 });
 
 // TODO: use logging library...
 // eslint-disable-next-line no-console
-client.on('error', (err) => console.log('Redis Client Error', err));
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-await client.connect();
+await redisClient.connect();
 
-export default client;
+export default redisClient;

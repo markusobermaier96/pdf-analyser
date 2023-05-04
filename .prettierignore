@@ -15,4 +15,4 @@ yarn.lock
 
 tsconfig.json
 
-docker-data/
+docker/redis
