@@ -22,7 +22,8 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 				select: { nonce: true }
 			})
 			.catch(() => {
-				throw error(500, 'Could not retrieve user from db');
+				//throw error(500, 'Could not retrieve user from db');
+				console.log('Could not retrieve user from db. Not existent');
 			});
 		return { nonce: user?.nonce ?? '' };
 	}

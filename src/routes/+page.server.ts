@@ -41,7 +41,7 @@ export const actions: Actions = {
 		}
 
 		// writing to db's
-		let hash;
+		let hash: string;
 		try {
 			// Read the file contents as a Buffer
 			const buffer = await fileField.arrayBuffer();
@@ -56,37 +56,67 @@ export const actions: Actions = {
 						name: hash,
 						dimension: 768
 					}
+				})
+				.catch(err => {
+					console.log("couldnt create index")
+					throw error(500, "Upload failed")
+				});
+				// wait for index to be created
+				let indexCreated = false
+				// BUG: the status is not changing from undefined to ready...pinecone api problem
+				while (!indexCreated) {
+					console.log(await pinecone.describeIndex({indexName: hash}))
+					if((await pinecone.describeIndex({indexName: hash})).database?.status == "ready") {
+						indexCreated = true
+					}
+				}
+				console.log(await pinecone.describeIndex({indexName: hash}))
+				// write vectors to pinecone index
+				const pineconeIndex = pinecone.Index(hash);
+				/* await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings(), {
+					pineconeIndex
+				}); */
+				await PineconeStore.fromDocuments(
+					chunks,
+					new HuggingFaceInferenceEmbeddings({
+						apiKey: HF_ACCESS_TOKEN
+					}),
+					{
+						pineconeIndex
+					}
+				).catch(err => {
+					console.log("couldnt upload vectors")
+					pinecone.deleteIndex({indexName: hash})
+					throw error(500, "Upload failed")
 				});
 			} else {
-				console.log('index already exists');
+				console.log('Pinecone: Index already exists');
+				// delete index if its empty
+				/* if((await pinecone.describeIndex({indexName: hash})).database?. == "ready") {
+					indexCreated = true
+				} */
 			}
 
-			if (!(await prisma.file.findFirst({ where: { hash } }))) {
-				await prisma.file.create({
-					data: {
-						hash,
-						name: fileField.name,
-						size: fileField.size,
-						data: Buffer.from(buffer),
-						user: { connect: { publicAddress: publicAddress } }
-					}
-				});
+			if (!(await prisma.file.findUnique({ where: { hash } }))) {
+				let file_model = {
+					hash: hash,
+					name: fileField.name,
+					size: fileField.size,
+					user: { connect: { publicAddress: publicAddress } }
+				};
+				await prisma.file
+					.create({
+						data: file_model
+					})
+					.then(() => {
+						console.log('stored file in db');
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			} else {
+				console.log('Prisma: File already in store');
 			}
-
-			// write vectors to pinecone index
-			const pineconeIndex = pinecone.Index(hash);
-			/* await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings(), {
-				pineconeIndex,
-			}); */
-			await PineconeStore.fromDocuments(
-				chunks,
-				new HuggingFaceInferenceEmbeddings({
-					apiKey: HF_ACCESS_TOKEN
-				}),
-				{
-					pineconeIndex
-				}
-			);
 		} catch (err) {
 			console.log(err);
 			throw error(500, 'Internal Server Error');

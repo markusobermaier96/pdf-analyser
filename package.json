@@ -6,7 +6,7 @@
 		"node": "18.x"
 	},
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "npx prisma generate && vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
@@ -19,7 +19,6 @@
 	"devDependencies": {
 		"@metamask/providers": "^10.2.1",
 		"@playwright/test": "^1.32.3",
-		"@prisma/client": "^4.12.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/adapter-vercel": "^2.4.3",
 		"@sveltejs/kit": "^1.5.0",
@@ -34,7 +33,7 @@
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"prisma": "^4.12.0",
+		"prisma": "^4.13.0",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"svelte-youtube-embed": "^0.1.8",
@@ -50,8 +49,10 @@
 		"@huggingface/inference": "^1.6.2",
 		"@metamask/detect-provider": "^2.0.0",
 		"@pinecone-database/pinecone": "^0.0.10",
+		"@prisma/client": "^4.13.0",
 		"@types/markdown-it": "^12.2.3",
 		"@vercel/node": "^2.14.0",
+		"@vercel/postgres": "^0.1.3",
 		"daisyui": "^2.51.6",
 		"ethers": "^6.2.3",
 		"formdata-node": "^5.0.0",

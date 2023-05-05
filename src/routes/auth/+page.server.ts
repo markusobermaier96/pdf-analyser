@@ -23,10 +23,10 @@ export const actions: Actions = {
 					publicAddress: userAddress
 				}
 			})
-			.catch(() => {
-				throw error(500, 'Could not retrieve user from db');
+			.catch((err) => {
+				console.log(err);
+				throw error(500, 'Error occured while calling the database');
 			});
-
 		/* create new user if he is not registered yet and return nonce to frontend */
 		let nonce;
 		if (!user) {
@@ -41,7 +41,6 @@ export const actions: Actions = {
 				})
 				.then(() => {
 					console.log('created user');
-					return { success: true };
 				})
 				.catch((err) => {
 					console.log(err);
