@@ -5,6 +5,8 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import type { ChatCompletionRequestMessage } from 'openai/dist/api';
 import { pinecone } from '@lib/server/pinecone';
 import { makeChain, ModelProvider } from '@lib/utils/makechain-free';
+import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
+import { HF_ACCESS_TOKEN } from '$env/static/private';
 
 export const config: Config = {
 	runtime: 'edge'
@@ -19,44 +21,61 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 		controller.enqueue(`data: ${JSON.stringify(data)}\n\n`);
 	}
 
-	//let sentence = 'You, are, dumb, and, i, cant, help, you. ';
-
 	const pineconeIndex = pinecone.Index(indexHash);
-	const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
-		pineconeIndex
-	});
+
+	/* const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+		{
+			pineconeIndex: index,
+			textKey: 'text',
+			namespace: PINECONE_NAME_SPACE
+		}); */
+	let vectorStore: PineconeStore
+	try {
+		vectorStore = await PineconeStore.fromExistingIndex(
+		
+			new HuggingFaceInferenceEmbeddings({ apiKey: HF_ACCESS_TOKEN }),
+			{
+				pineconeIndex: pineconeIndex,
+				textKey: 'text',
+			})
+	} catch (err) {
+		console.log(err)
+		throw error(500, 'Error getting vector store')	
+	}
 
 	const stream = new ReadableStream({
 		async start(controller) {
-			/* for (let i = 0; i < 3; i++) {
+			/* let sentence = 'You, are, dumb, and, i, cant, help, you. '
+			for (let i = 0; i < 3; i++) {
 				let arr = sentence.split(',');
 				for (let j = 0; j < arr.length; j++) {
-					await sleep(70, 300);
 					sendData(controller, arr[j]);
 				}
 			} */
-			const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {
+			console.log("calling chain with: " + reqMessages[reqMessages.length - 1].content)
+			const chain = makeChain(ModelProvider.HF, vectorStore, (token: string) => {
 				sendData(controller, token);
 			});
-
 			await chain
 				.call({
 					question: reqMessages[reqMessages.length - 1].content,
 					chat_history: reqMessages || []
 				})
+				.then((res) => {console.log(res);})
 				.catch((err) => {
 					console.log(err);
 					throw error(500, 'Too many requests. Exceeded API limit');
 				});
 
 			sendData(controller, '[DONE]');
+			console.log("done")
 		}
 	});
 
 	setHeaders({
 		'Cache-Control': 'no-cache',
 		'Content-Type': 'text/event-stream',
-		Connection: 'keep-alive'
+		'Connection': 'keep-alive'
 	});
 
 	return new Response(stream);

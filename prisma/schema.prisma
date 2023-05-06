@@ -16,18 +16,17 @@ model User {
   nonce         String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  files File[]
+  files         File[]
 }
 
 model File {
-  hash String @id
-  name String
-  size Int
-
-  user      User     @relation(fields: [userId], references: [publicAddress])
-  userId    String
+  hash      String   @id
+  name      String
+  size      Int
   createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [publicAddress])
+  userId String
 
   //embedding Unsupported("vector(768)")?
 }

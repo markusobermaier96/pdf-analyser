@@ -8,11 +8,29 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 import { HF_ACCESS_TOKEN } from '$env/static/private';
+import type { Document } from "langchain/document";
+
+/* 
+How it works:
+
+1. Extract content 
+
+2. Split in chunks
+
+3. Create embeddings from chunks
+
+4. Store embeddings in pinecone
+
+5. Store hash in db and link document to user
+
+*/
+
 
 const MAX_HASH_LENGTH = 45;
 
 export const actions: Actions = {
 	upload: async ({ request, cookies }) => {
+		// 1. Extract content
 		const data = await request.formData();
 		const publicAddress = data.get('publicAddress') as string;
 		const fileField = data.get('pdf') as File;
@@ -23,8 +41,8 @@ export const actions: Actions = {
 			});
 		}
 
-		// processing the pdf file
-		let chunks;
+		// 2. Split in chunks
+		let chunks: Document<Record<string, any>>[];
 		try {
 			// splitting pdf into chunks
 			const loader = new PDFLoader(fileField);
@@ -40,7 +58,14 @@ export const actions: Actions = {
 			});
 		}
 
-		// writing to db's
+		/* // 3. Create Embeddings from chunks
+		const embeddings = new HuggingFaceInferenceEmbeddings({
+			apiKey: HF_ACCESS_TOKEN,
+		});
+		const documents = chunks.map(chunk => chunk.pageContent);
+		const documentRes = await embeddings.embedDocuments(documents);
+		console.log(documentRes) */
+
 		let hash: string;
 		try {
 			// Read the file contents as a Buffer
@@ -49,7 +74,7 @@ export const actions: Actions = {
 			// Generate the SHA-256 hash value of the uploaded file
 			hash = await generateHashMaxLength(Buffer.from(buffer), MAX_HASH_LENGTH);
 
-			// Check if index already exists (only create index if not)
+			// 4. Store embeddings in pinecone
 			if (!(await pinecone.listIndexes()).includes(hash)) {
 				await pinecone.createIndex({
 					createRequest: {
@@ -63,14 +88,12 @@ export const actions: Actions = {
 				});
 				// wait for index to be created
 				let indexCreated = false
-				// BUG: the status is not changing from undefined to ready...pinecone api problem
 				while (!indexCreated) {
 					console.log(await pinecone.describeIndex({indexName: hash}))
-					if((await pinecone.describeIndex({indexName: hash})).database?.status == "ready") {
+					if((await pinecone.describeIndex({indexName: hash})).status?.ready) {
 						indexCreated = true
 					}
 				}
-				console.log(await pinecone.describeIndex({indexName: hash}))
 				// write vectors to pinecone index
 				const pineconeIndex = pinecone.Index(hash);
 				/* await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings(), {
@@ -91,12 +114,13 @@ export const actions: Actions = {
 				});
 			} else {
 				console.log('Pinecone: Index already exists');
-				// delete index if its empty
+				// TODO: delete index if its empty
 				/* if((await pinecone.describeIndex({indexName: hash})).database?. == "ready") {
 					indexCreated = true
 				} */
 			}
 
+			// 5. Store hash in db and link document to user
 			if (!(await prisma.file.findUnique({ where: { hash } }))) {
 				let file_model = {
 					hash: hash,

@@ -5,7 +5,7 @@ specifiers:
   '@huggingface/inference': ^1.6.2
   '@metamask/detect-provider': ^2.0.0
   '@metamask/providers': ^10.2.1
-  '@pinecone-database/pinecone': ^0.0.10
+  '@pinecone-database/pinecone': ^0.0.14
   '@playwright/test': ^1.32.3
   '@prisma/client': ^4.13.0
   '@sveltejs/adapter-auto': ^2.0.0
@@ -52,7 +52,7 @@ dependencies:
   '@huggingface/hub': 0.3.3
   '@huggingface/inference': 1.6.2
   '@metamask/detect-provider': 2.0.0
-  '@pinecone-database/pinecone': 0.0.10
+  '@pinecone-database/pinecone': 0.0.14
   '@prisma/client': 4.13.0_prisma@4.13.0
   '@types/markdown-it': 12.2.3
   '@vercel/node': 2.14.0
@@ -62,7 +62,7 @@ dependencies:
   formdata-node: 5.0.0
   fs: 0.0.1-security
   jsonwebtoken: 9.0.0
-  langchain: 0.0.68_bpcolnibshxvt635ux6j4o6mzq
+  langchain: 0.0.68_36fanpvdggk3d6jnjkqx4cyz3m
   markdown-it: 13.0.1
   openai: 3.2.1
   pdf-parse: 1.1.1
@@ -729,8 +729,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@pinecone-database/pinecone/0.0.10:
-    resolution: {integrity: sha512-SwfobqOmSQvEkEtw44uc6ZZ9R/aU5bDYkBAX0cGOcSk6wWlm5yiJA+XeZkyMeUsFb1EQaGhbafIy97TDqcnnsw==}
+  /@pinecone-database/pinecone/0.0.14:
+    resolution: {integrity: sha512-uQspP/fGB2xhS/PWVD9/XnNnzuTfjukuX9IKH0EYqJMXd0Yx+ewcRADVFrF5RBeBWXBWrpGhIhvWE0hTPy/BAg==}
     engines: {node: '>=14.0.0'}
     dependencies:
       cross-fetch: 3.1.5
@@ -2729,7 +2729,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /langchain/0.0.68_bpcolnibshxvt635ux6j4o6mzq:
+  /langchain/0.0.68_36fanpvdggk3d6jnjkqx4cyz3m:
     resolution: {integrity: sha512-lp7BshAa2BZfayEi/HSZr7d/D3tAM2FYdLgcnbSqM2/NB565435C+mnY5QoKMVYCFukgD4/28AbPvT7xSSfgtw==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -2825,7 +2825,7 @@ packages:
       '@anthropic-ai/sdk': 0.4.3
       '@dqbd/tiktoken': 1.0.7
       '@huggingface/inference': 1.6.2
-      '@pinecone-database/pinecone': 0.0.10
+      '@pinecone-database/pinecone': 0.0.14
       ansi-styles: 5.2.0
       binary-extensions: 2.2.0
       browser-or-node: 2.1.1

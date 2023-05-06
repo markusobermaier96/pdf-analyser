@@ -5,7 +5,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { HuggingFaceInference } from 'langchain/llms/hf';
 import type { BaseLanguageModel } from 'langchain/dist/base_language';
-import { ConversationalRetrievalQAChain } from 'langchain/dist/chains/conversational_retrieval_chain';
+import { ConversationalRetrievalQAChain } from "langchain/chains";
 
 /* Question answering over documents consists of four steps:
 
@@ -52,7 +52,7 @@ export const makeChain = (
 	let model: BaseLanguageModel;
 	if (modelProvider === ModelProvider.OPENAI) {
 		model = new ChatOpenAI({
-			temperature: 0,
+			temperature: 1,
 			openAIApiKey: OPENAI_API_KEY,
 			modelName: 'gpt-3.5-turbo',
 			maxRetries: 3,
@@ -62,10 +62,10 @@ export const makeChain = (
 		model = new HuggingFaceInference({
 			model: 'gpt2',
 			apiKey: HF_ACCESS_TOKEN,
-			temperature: 0
+			temperature: 1,
+			maxRetries: 3,
 		});
 	}
-
 	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(), {
 		returnSourceDocuments: true,
 		callbacks: CallbackManager.fromHandlers({
@@ -75,36 +75,6 @@ export const makeChain = (
 			}
 		}),
 		questionGeneratorTemplate: CONDENSE_PROMPT.template,
-		qaTemplate: QA_PROMPT.template
+		qaTemplate: QA_PROMPT.template,
 	});
 };
-
-/* export const makeChain = (vectorstore, onTokenStream?: (token: string) => void) => {
-	const questionGenerator = new LLMChain({
-		llm: new HuggingFaceInference({ temperature: 1, model: 'gpt2' }),
-		prompt: CONDENSE_PROMPT
-	});
-	const docChain = loadQAChain(
-		new HuggingFaceInference({
-			temperature: 1,
-			model: 'gpt2', //change this to older versions (e.g. gpt-3.5-turbo) if you don't have access to gpt-4
-			callbackManager: onTokenStream
-				? CallbackManager.fromHandlers({
-						async handleLLMNewToken(token) {
-							onTokenStream(token);
-							console.log(token);
-						}
-				  })
-				: undefined
-		}),
-		{ prompt: QA_PROMPT }
-	);
-	return new ChatVectorDBQAChain({
-		vectorstore,
-		combineDocumentsChain: docChain,
-		questionGeneratorChain: questionGenerator,
-		returnSourceDocuments: true,
-		k: 2 //number of source documents to return
-	});
-};
- */

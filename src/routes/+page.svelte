@@ -67,7 +67,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ messages: $messageStore, indexHash: $selectedIndex })
+			payload: JSON.stringify({ messages: $messageStore.messages, indexHash: $selectedIndex })
 		});
 		eventSource.addEventListener('error', handleError);
 		eventSource.addEventListener('message', (e) => {
