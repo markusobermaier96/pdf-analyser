@@ -30,8 +30,8 @@ export const actions: Actions = {
 			const loader = new PDFLoader(fileField);
 			const docs = await loader.load();
 			const splitter = new RecursiveCharacterTextSplitter({
-				chunkSize: 500,
-				chunkOverlap: 100
+				chunkSize: 1000,
+				chunkOverlap: 0
 			});
 			chunks = await splitter.splitDocuments(docs);
 		} catch (err) {
