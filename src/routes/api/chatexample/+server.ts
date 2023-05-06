@@ -6,11 +6,12 @@ import type { ChatCompletionRequestMessage } from 'openai/dist/api';
 import { pinecone } from '@lib/server/pinecone';
 import { makeChain, ModelProvider } from '@lib/utils/makechain-free';
 import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
-import { HF_ACCESS_TOKEN } from '$env/static/private';
+import { HF_ACCESS_TOKEN, OPENAI_API_KEY } from '$env/static/private';
+import { ConsoleCallbackHandler } from "langchain/callbacks";
 
-export const config: Config = {
+/* export const config: Config = {
 	runtime: 'edge'
-};
+}; */
 
 export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	const data = await request.json();
@@ -23,20 +24,13 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 
 	const pineconeIndex = pinecone.Index(indexHash);
 
-	/* const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
-		{
-			pineconeIndex: index,
-			textKey: 'text',
-			namespace: PINECONE_NAME_SPACE
-		}); */
 	let vectorStore: PineconeStore
 	try {
 		vectorStore = await PineconeStore.fromExistingIndex(
 		
-			new HuggingFaceInferenceEmbeddings({ apiKey: HF_ACCESS_TOKEN }),
+			new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
 			{
 				pineconeIndex: pineconeIndex,
-				textKey: 'text',
 			})
 	} catch (err) {
 		console.log(err)
@@ -53,15 +47,17 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 				}
 			} */
 			console.log("calling chain with: " + reqMessages[reqMessages.length - 1].content)
-			const chain = makeChain(ModelProvider.HF, vectorStore, (token: string) => {
+			const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {
 				sendData(controller, token);
 			});
 			await chain
 				.call({
 					question: reqMessages[reqMessages.length - 1].content,
 					chat_history: reqMessages || []
-				})
-				.then((res) => {console.log(res);})
+				}, 
+				[
+					new ConsoleCallbackHandler(),
+				])
 				.catch((err) => {
 					console.log(err);
 					throw error(500, 'Too many requests. Exceeded API limit');

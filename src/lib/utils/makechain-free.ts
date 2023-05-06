@@ -34,7 +34,7 @@ Standalone question:`);
 const QA_PROMPT = PromptTemplate.fromTemplate(
 	`You are an AI assistant providing helpful advice. You are given the following extracted parts of a long document and a question. Provide a conversational answer based on the context provided.
 You should only provide hyperlinks that reference the context below. Do NOT make up hyperlinks.
-If you can't find the answer in the context below, just say "Hmm, I'm not sure." Don't try to make up an answer.
+If you can't find the answer in the context below, just say "The document does not provide information to answer your question." Don't try to make up an answer.
 If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.
 
 Question: {question}
@@ -52,11 +52,11 @@ export const makeChain = (
 	let model: BaseLanguageModel;
 	if (modelProvider === ModelProvider.OPENAI) {
 		model = new ChatOpenAI({
-			temperature: 1,
+			temperature: 0,
 			openAIApiKey: OPENAI_API_KEY,
 			modelName: 'gpt-3.5-turbo',
 			maxRetries: 3,
-			streaming: true
+			streaming: true,
 		});
 	} else {
 		model = new HuggingFaceInference({
@@ -72,7 +72,7 @@ export const makeChain = (
 			async handleLLMNewToken(token) {
 				onTokenStream(token);
 				console.log(token);
-			}
+			},
 		}),
 		questionGeneratorTemplate: CONDENSE_PROMPT.template,
 		qaTemplate: QA_PROMPT.template,

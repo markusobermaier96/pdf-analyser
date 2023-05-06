@@ -7,7 +7,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
-import { HF_ACCESS_TOKEN } from '$env/static/private';
+import { HF_ACCESS_TOKEN, OPENAI_API_KEY } from '$env/static/private';
 import type { Document } from "langchain/document";
 
 /* 
@@ -58,14 +58,6 @@ export const actions: Actions = {
 			});
 		}
 
-		/* // 3. Create Embeddings from chunks
-		const embeddings = new HuggingFaceInferenceEmbeddings({
-			apiKey: HF_ACCESS_TOKEN,
-		});
-		const documents = chunks.map(chunk => chunk.pageContent);
-		const documentRes = await embeddings.embedDocuments(documents);
-		console.log(documentRes) */
-
 		let hash: string;
 		try {
 			// Read the file contents as a Buffer
@@ -79,7 +71,7 @@ export const actions: Actions = {
 				await pinecone.createIndex({
 					createRequest: {
 						name: hash,
-						dimension: 768
+						dimension: 1536
 					}
 				})
 				.catch(err => {
@@ -96,28 +88,19 @@ export const actions: Actions = {
 				}
 				// write vectors to pinecone index
 				const pineconeIndex = pinecone.Index(hash);
-				/* await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings(), {
+				await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings({
+					openAIApiKey: OPENAI_API_KEY,
+					verbose: true,
+				}), {
 					pineconeIndex
-				}); */
-				await PineconeStore.fromDocuments(
-					chunks,
-					new HuggingFaceInferenceEmbeddings({
-						apiKey: HF_ACCESS_TOKEN
-					}),
-					{
-						pineconeIndex
-					}
-				).catch(err => {
+				})
+				.catch(err => {
 					console.log("couldnt upload vectors")
 					pinecone.deleteIndex({indexName: hash})
 					throw error(500, "Upload failed")
 				});
 			} else {
 				console.log('Pinecone: Index already exists');
-				// TODO: delete index if its empty
-				/* if((await pinecone.describeIndex({indexName: hash})).database?. == "ready") {
-					indexCreated = true
-				} */
 			}
 
 			// 5. Store hash in db and link document to user
