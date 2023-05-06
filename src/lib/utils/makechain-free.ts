@@ -57,6 +57,12 @@ export const makeChain = (
 			modelName: 'gpt-3.5-turbo',
 			maxRetries: 3,
 			streaming: true,
+			callbacks: CallbackManager.fromHandlers({
+				async handleLLMNewToken(token) {
+					onTokenStream(token);
+					console.log(token);
+				},
+			}),
 		});
 	} else {
 		model = new HuggingFaceInference({
@@ -68,13 +74,7 @@ export const makeChain = (
 	}
 	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(), {
 		returnSourceDocuments: true,
-		callbacks: CallbackManager.fromHandlers({
-			async handleLLMNewToken(token) {
-				onTokenStream(token);
-				console.log(token);
-			},
-		}),
 		questionGeneratorTemplate: CONDENSE_PROMPT.template,
-		qaTemplate: QA_PROMPT.template,
+		qaTemplate: QA_PROMPT.template
 	});
 };

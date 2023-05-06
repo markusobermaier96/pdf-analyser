@@ -81,7 +81,6 @@ export const actions: Actions = {
 				// wait for index to be created
 				let indexCreated = false
 				while (!indexCreated) {
-					console.log(await pinecone.describeIndex({indexName: hash}))
 					if((await pinecone.describeIndex({indexName: hash})).status?.ready) {
 						indexCreated = true
 					}
@@ -90,7 +89,6 @@ export const actions: Actions = {
 				const pineconeIndex = pinecone.Index(hash);
 				await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings({
 					openAIApiKey: OPENAI_API_KEY,
-					verbose: true,
 				}), {
 					pineconeIndex
 				})
