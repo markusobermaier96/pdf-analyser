@@ -72,9 +72,9 @@ export const makeChain = (
 			maxRetries: 3,
 		});
 	}
-	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(), {
+	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(2), {
 		returnSourceDocuments: true,
 		questionGeneratorTemplate: CONDENSE_PROMPT.template,
-		qaTemplate: QA_PROMPT.template
+		qaTemplate: QA_PROMPT.template,
 	});
 };

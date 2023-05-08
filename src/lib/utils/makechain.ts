@@ -50,10 +50,8 @@ export const makeChain = (vectorstore: PineconeStore, onTokenStream?: (token: st
 	);
 
 	return new ConversationalRetrievalQAChain({
-		vectorstore,
 		combineDocumentsChain: docChain,
 		questionGeneratorChain: questionGenerator,
 		returnSourceDocuments: true,
-		k: 2 //number of source documents to return
 	});
 };

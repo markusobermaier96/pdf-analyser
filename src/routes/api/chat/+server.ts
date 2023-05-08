@@ -4,7 +4,7 @@ import { pinecone } from '@lib/server/pinecone';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
 import type { ChatCompletionRequestMessage } from 'openai';
-import { makeChain } from '@lib/utils/makechain-free';
+import { makeChain, ModelProvider } from '@lib/utils/makechain-free';
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
 
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	const controller = new ReadableStreamDefaultController();
 
 	// Create a chain
-	const chain = makeChain(vectorStore, (token: string) => {
+	const chain = makeChain(ModelProvider.OPENAI,vectorStore, (token: string) => {
 		sendData(controller, token);
 	});
 
