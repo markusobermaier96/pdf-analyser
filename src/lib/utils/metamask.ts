@@ -1,10 +1,17 @@
 import { transactionParameters } from '@lib/config/metamask';
-import { BrowserProvider, ethers, JsonRpcSigner } from 'ethers';
+import { ethers, toBigInt, type BrowserProvider, type JsonRpcSigner } from 'ethers';
+
 
 export enum Item {
 	Provider,
 	Signer,
 	Account
+}
+
+export enum Currency {
+	USD,
+	WEI,
+	ETHER
 }
 
 let provider: BrowserProvider;
@@ -57,13 +64,28 @@ export async function get(item: Item) {
 	}
 }
 
-export async function sendTransaction() {
+export function sendTransaction(currency: Currency, amount: string, signer: JsonRpcSigner) {
 	if (!window.ethereum) {
 		throw Error('window.ethereum not found');
 	}
 	transactionParameters.from = window.ethereum!.selectedAddress!;
-	return await window.ethereum.request({
-		method: 'eth_sendTransaction',
-		params: [transactionParameters]
-	});
+	switch (currency) {
+		case Currency.USD:
+			const usdToWei = ethers.parseEther("0.00054")
+			let costInWei = ethers.formatUnits(ethers.parseUnits(amount, 4) * usdToWei , 4)
+			console.log("costInWei ", costInWei);
+			console.log(ethers.parseUnits(costInWei, 0))
+			transactionParameters.value = ethers.parseUnits(costInWei, 0)
+			break;
+		case Currency.WEI:
+			transactionParameters.value = toBigInt(amount);
+			break;
+		case Currency.ETHER:
+			transactionParameters.value = ethers.parseEther(amount)
+			break;
+		default:
+			throw new Error(`Invalid currency ${currency}`);
+	}
+	console.log("amount ", transactionParameters.value);
+	return signer.sendTransaction(transactionParameters);
 }

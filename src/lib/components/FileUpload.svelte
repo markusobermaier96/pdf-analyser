@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms';
+	import { transactionParameters } from '@lib/config/metamask';
 	import { selectedIndex } from '@lib/store/userStore';
+	import { Currency } from '@lib/utils/metamask';
 	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
+	import { Item, get } from '@lib/utils/metamask';
+	import type { JsonRpcSigner } from 'ethers';
 
 	const handleSubmit: SubmitFunction = async ({ data, cancel }) => {
 		if (
@@ -16,28 +20,36 @@
 			cancel();
 			return;
 		}
-		data.append('publicAddress', publicAddress);
+		let pdf = data.get('pdf');
+
 		// confirm metamask transaction before upload
-		/* await sendTransaction()
-			.then((val) => console.log(val))
+		const estimatedCost: string = await fetch('/costs', {
+			method: 'POST',
+			body: data
+		}).then((res) => {
+			return res.json();
+		});
+		if (!window.confirm(`Your estimated cost is ${estimatedCost}. Proceed?`)) {
+			cancel();
+			return;
+		}
+		await sendTransaction(Currency.USD, estimatedCost, (await get(Item.Signer)) as JsonRpcSigner)
+			.then((val) => console.log('hi'))
 			.catch((err) => {
+				console.log(err.code);
 				if (err.code === 4001) {
 					toast.error('Transaction denied. Abort upload.');
+				}
+				console.log(err.code);
+				if (err.code === 'INSUFFICIENT_FUNDS') {
+					toast.error('Insufficient balance in your Metamask Wallet');
 				}
 
 				cancel();
 				return;
-			}); */
+			});
 
-		/* await confirmPayment()
-			.then(async (_) => {
-				
-			})
-			.catch((err) => {
-				toast.error(err);
-				cancel();
-				return;
-			}); */
+		data.append('publicAddress', publicAddress);
 
 		return async ({ result, update }) => {
 			if (result.type == 'success') {

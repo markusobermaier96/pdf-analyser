@@ -41,9 +41,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 		async start(controller) {
 			let sendAnswer = false;
 			let emptyTokenCount = 0
-			const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {
-				console.log(token);
-				
+			const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {				
 				if(token == "") {
 					emptyTokenCount++
 				} else {
@@ -60,7 +58,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 				.call({
 					question: reqMessages[reqMessages.length - 1].content,
 					chat_history: reqMessages || []
-				}, 
+				},
 				)
 				.catch((err) => {
 					throw error(500, 'Too many requests. Exceeded API limit');

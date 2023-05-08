@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@ethersproject/bignumber': ^5.7.0
   '@huggingface/hub': ^0.3.3
   '@huggingface/inference': ^1.6.2
   '@metamask/detect-provider': ^2.0.0
@@ -23,11 +24,11 @@ specifiers:
   eslint: ^8.28.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
-  ethers: ^6.2.3
+  ethers: ^6.3.0
   formdata-node: ^5.0.0
   fs: 0.0.1-security
   jsonwebtoken: ^9.0.0
-  langchain: ^0.0.68
+  langchain: ^0.0.72
   markdown-it: ^13.0.1
   openai: ^3.2.1
   pdf-parse: ^1.1.1
@@ -49,6 +50,7 @@ specifiers:
   zod: ^3.21.4
 
 dependencies:
+  '@ethersproject/bignumber': 5.7.0
   '@huggingface/hub': 0.3.3
   '@huggingface/inference': 1.6.2
   '@metamask/detect-provider': 2.0.0
@@ -58,11 +60,11 @@ dependencies:
   '@vercel/node': 2.14.0
   '@vercel/postgres': 0.1.3
   daisyui: 2.51.6_j7yt3jd32cwenjqavrrga47yr4
-  ethers: 6.2.3
+  ethers: 6.3.0
   formdata-node: 5.0.0
   fs: 0.0.1-security
   jsonwebtoken: 9.0.0
-  langchain: 0.0.68_36fanpvdggk3d6jnjkqx4cyz3m
+  langchain: 0.0.72_36fanpvdggk3d6jnjkqx4cyz3m
   markdown-it: 13.0.1
   openai: 3.2.1
   pdf-parse: 1.1.1
@@ -583,6 +585,24 @@ packages:
     resolution: {integrity: sha512-lxJ9R5ygVm8ZWgYdUweoq5ownDlJ4upvoWmO4eLxBYHdMo+vZ/Rx0EN6MbKWDJOSUGrqJy2Gt+Dyv/VKml0fjg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@ethersproject/bignumber/5.7.0:
+    resolution: {integrity: sha512-n1CAdIHRWjSucQO3MC1zPSVgV/6dy/fjL9pMrPP9peL+QxEg9wOsVqwD4+818B6LUEtaXzVHQiuivzRoxPxUGw==}
+    dependencies:
+      '@ethersproject/bytes': 5.7.0
+      '@ethersproject/logger': 5.7.0
+      bn.js: 5.2.1
+    dev: false
+
+  /@ethersproject/bytes/5.7.0:
+    resolution: {integrity: sha512-nsbxwgFXWh9NyYWo+U8atvmMsSdKJprTcICAkvbBffT75qDocbuggBU0SJiVK2MuTrp0q+xvLkTnGMPK1+uA9A==}
+    dependencies:
+      '@ethersproject/logger': 5.7.0
+    dev: false
+
+  /@ethersproject/logger/5.7.0:
+    resolution: {integrity: sha512-0odtFdXu/XHtjQXJYA3u9G0G8btm0ND5Cu8M7i5vhEcE8/HmF4Lbdqanwyv4uQTr2tx6b7fQRmgLrsnpQlmnig==}
+    dev: false
 
   /@fortaine/fetch-event-source/3.0.6:
     resolution: {integrity: sha512-621GAuLMvKtyZQ3IA6nlDWhV1V/7PGOTNIGLUifxt0KzM+dZIweJ6F3XvQF3QnqeNfS1N7WQ0Kil1Di/lhChEw==}
@@ -1446,6 +1466,10 @@ packages:
     resolution: {integrity: sha512-DRQrD6gJyy8FbiE4s+bDoXS9hiW3Vbx5uCdwvcCf3zLHL+Iv7LtGHLpr+GZV8rHG8tK766FGYBwRbu8pELTt+w==}
     dev: true
 
+  /bn.js/5.2.1:
+    resolution: {integrity: sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==}
+    dev: false
+
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
     dependencies:
@@ -2256,8 +2280,8 @@ packages:
       fast-safe-stringify: 2.1.1
     dev: true
 
-  /ethers/6.2.3:
-    resolution: {integrity: sha512-l1Z/Yr+HrOk+7LTeYRHGMvYwVLGpTuVrT/kJ7Kagi3nekGISYILIby0f1ipV9BGzgERyy+w4emH+d3PhhcxIfA==}
+  /ethers/6.3.0:
+    resolution: {integrity: sha512-CKFYvTne1YT4S1glTiu7TgGsj0t6c6GAD7evrIk8zbeUb6nK8dcUPAiAWM8uDX/1NmRTvLM9+1Vnn49hwKtEzw==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@adraffy/ens-normalize': 1.9.0
@@ -2729,12 +2753,13 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /langchain/0.0.68_36fanpvdggk3d6jnjkqx4cyz3m:
-    resolution: {integrity: sha512-lp7BshAa2BZfayEi/HSZr7d/D3tAM2FYdLgcnbSqM2/NB565435C+mnY5QoKMVYCFukgD4/28AbPvT7xSSfgtw==}
+  /langchain/0.0.72_36fanpvdggk3d6jnjkqx4cyz3m:
+    resolution: {integrity: sha512-ueCad5qvrieyiAJCL0oiYSHuxE0QklpCeal7fANTyYznrEo37L+b24XJIvmsIfNkYHZ6d22Xd2a/oeGkywIIbQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@aws-sdk/client-lambda': ^3.310.0
       '@aws-sdk/client-s3': ^3.310.0
+      '@clickhouse/client': ^0.0.14
       '@getmetal/metal-sdk': '*'
       '@huggingface/inference': ^1.5.1
       '@opensearch-project/opensearch': '*'
@@ -2766,6 +2791,8 @@ packages:
       '@aws-sdk/client-lambda':
         optional: true
       '@aws-sdk/client-s3':
+        optional: true
+      '@clickhouse/client':
         optional: true
       '@getmetal/metal-sdk':
         optional: true

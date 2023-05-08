@@ -52,6 +52,7 @@ export const actions: Actions = {
 				chunkOverlap: 0
 			});
 			chunks = await splitter.splitDocuments(docs);
+
 		} catch (err) {
 			throw error(500, {
 				message: 'Processing of pdf file failed'
@@ -89,6 +90,7 @@ export const actions: Actions = {
 				const pineconeIndex = pinecone.Index(hash);
 				await PineconeStore.fromDocuments(chunks, new OpenAIEmbeddings({
 					openAIApiKey: OPENAI_API_KEY,
+					verbose: true,
 				}), {
 					pineconeIndex
 				})

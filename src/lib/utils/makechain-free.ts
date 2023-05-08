@@ -1,11 +1,11 @@
 import { PromptTemplate } from 'langchain';
 import { OPENAI_API_KEY, HF_ACCESS_TOKEN } from '$env/static/private';
-import { CallbackManager, ConsoleCallbackHandler } from 'langchain/callbacks';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { HuggingFaceInference } from 'langchain/llms/hf';
 import type { BaseLanguageModel } from 'langchain/dist/base_language';
 import { ConversationalRetrievalQAChain } from "langchain/chains";
+import { BaseCallbackHandler } from "langchain/callbacks";
 
 /* Question answering over documents consists of four steps:
 
@@ -49,6 +49,20 @@ export const makeChain = (
 	vectorstore: PineconeStore,
 	onTokenStream: (token: string) => void,
 ) => {
+
+	const llmCb = BaseCallbackHandler.fromMethods({
+		handleLLMNewToken(token: string) {
+			console.log({ token });
+			onTokenStream(token);
+		},
+		handleLLMStart(llm, _prompts: string[]) {
+		  console.log("input tokens: ",  _prompts);
+		},
+		handleLLMEnd(output, runId, parentRunId?) {
+			console.log("output tokens:  ", output.llmOutput);
+		},
+	});
+
 	let model: BaseLanguageModel;
 	if (modelProvider === ModelProvider.OPENAI) {
 		model = new ChatOpenAI({
@@ -57,11 +71,13 @@ export const makeChain = (
 			modelName: 'gpt-3.5-turbo',
 			maxRetries: 3,
 			streaming: true,
-			callbacks: CallbackManager.fromHandlers({
+			
+			/* callbacks: CallbackManager.fromHandlers({
 				async handleLLMNewToken(token) {
 					onTokenStream(token);
 				},
-			}),
+			}), */
+			callbacks: [llmCb]
 		});
 	} else {
 		model = new HuggingFaceInference({
@@ -75,6 +91,5 @@ export const makeChain = (
 		returnSourceDocuments: true,
 		//questionGeneratorTemplate: CONDENSE_PROMPT.template,
 		//qaTemplate: QA_PROMPT.template,
-		//verbose: true,
 	});
 };
