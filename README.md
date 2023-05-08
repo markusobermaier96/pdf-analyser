@@ -28,4 +28,4 @@ just lint
 
 ## User Authentication (from https://blog.devgenius.io/authenticating-users-to-your-web-app-using-metamask-and-nodejs-e920e45e358)
 
-![Metamask auth](./Metamask_auth.png)
+![Metamask auth](./docs/Metamask_auth.png)
