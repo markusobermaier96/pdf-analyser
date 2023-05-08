@@ -1,6 +1,6 @@
 import { PromptTemplate } from 'langchain';
 import { OPENAI_API_KEY, HF_ACCESS_TOKEN } from '$env/static/private';
-import { CallbackManager } from 'langchain/callbacks';
+import { CallbackManager, ConsoleCallbackHandler } from 'langchain/callbacks';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { HuggingFaceInference } from 'langchain/llms/hf';
@@ -47,7 +47,7 @@ Answer in Markdown:`
 export const makeChain = (
 	modelProvider: ModelProvider,
 	vectorstore: PineconeStore,
-	onTokenStream: (token: string) => void
+	onTokenStream: (token: string) => void,
 ) => {
 	let model: BaseLanguageModel;
 	if (modelProvider === ModelProvider.OPENAI) {
@@ -60,7 +60,6 @@ export const makeChain = (
 			callbacks: CallbackManager.fromHandlers({
 				async handleLLMNewToken(token) {
 					onTokenStream(token);
-					console.log(token);
 				},
 			}),
 		});
@@ -74,7 +73,8 @@ export const makeChain = (
 	}
 	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(2), {
 		returnSourceDocuments: true,
-		questionGeneratorTemplate: CONDENSE_PROMPT.template,
-		qaTemplate: QA_PROMPT.template,
+		//questionGeneratorTemplate: CONDENSE_PROMPT.template,
+		//qaTemplate: QA_PROMPT.template,
+		//verbose: true,
 	});
 };

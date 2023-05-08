@@ -1,5 +1,5 @@
 import { OPENAI_API_KEY } from '$env/static/private';
-import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from '@lib/config/pinecone';
+import { PINECONE_NAME_SPACE } from '@lib/config/pinecone';
 import { pinecone } from '@lib/server/pinecone';
 import { OpenAIEmbeddings } from 'langchain/embeddings';
 import { PineconeStore } from 'langchain/vectorstores';
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	setHeaders({
 		'Cache-Control': 'no-cache',
 		'Content-Type': 'text/event-stream',
-		Connection: 'keep-alive'
+		'Connection': 'keep-alive'
 	});
 	return new Response(stream);
 };

@@ -39,27 +39,30 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 
 	const stream = new ReadableStream({
 		async start(controller) {
-			/* let sentence = 'You, are, dumb, and, i, cant, help, you. '
-			for (let i = 0; i < 3; i++) {
-				let arr = sentence.split(',');
-				for (let j = 0; j < arr.length; j++) {
-					sendData(controller, arr[j]);
-				}
-			} */
-			console.log("calling chain with: " + reqMessages[reqMessages.length - 1].content)
+			let sendAnswer = false;
+			let emptyTokenCount = 0
 			const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {
-				sendData(controller, token);
+				console.log(token);
+				
+				if(token == "") {
+					emptyTokenCount++
+				} else {
+					emptyTokenCount = 0
+				}
+				if (emptyTokenCount == 2) {
+					sendAnswer = true
+				}
+				if (sendAnswer) {
+					sendData(controller, token);
+				}
 			});
 			await chain
 				.call({
 					question: reqMessages[reqMessages.length - 1].content,
 					chat_history: reqMessages || []
 				}, 
-				[
-					new ConsoleCallbackHandler(),
-				])
+				)
 				.catch((err) => {
-					console.log(err);
 					throw error(500, 'Too many requests. Exceeded API limit');
 				});
 
