@@ -1,7 +1,6 @@
 import { transactionParameters } from '@lib/config/metamask';
 import { ethers, toBigInt, type BrowserProvider, type JsonRpcSigner } from 'ethers';
 
-
 export enum Item {
 	Provider,
 	Signer,
@@ -39,6 +38,11 @@ async function initialize() {
 			window.location.reload();
 		}
 	});
+	let onNetworkChange: ethers.Subscriber = provider._getSubscriber({
+		type: 'network',
+		tag: "any"
+	})
+	onNetworkChange.start()
 
 	signer = await provider.getSigner();
 
