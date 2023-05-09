@@ -26,21 +26,21 @@ async function initialize() {
 	account = await provider.send('eth_requestAccounts', []).then((res) => {
 		return res[0];
 	});
-
-	const chainId = await ethereum.request({ method: 'eth_chainId' });
-
-	window.ethereum.on('chainChanged', handleChainChanged);
-
-	function handleChainChanged(chainId) {
-	// We recommend reloading the page, unless you must do otherwise.
-	console.log(`chain changed to ${chainId})
-	window.location.reload();
-	}
-
+	
 	signer = await provider.getSigner();
 
 	let account_balance_wei = await provider.getBalance('ethers.eth');
 	let account_balance_eth = ethers.formatEther(account_balance_wei).slice(0, 5);
+
+	const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+
+	window.ethereum.on('chainChanged', handleChainChanged);
+
+	function handleChainChanged(chainId) {
+		// We recommend reloading the page, unless you must do otherwise.
+		console.log(`chain changed to ${chainId}`)
+		window.location.reload();
+	}
 
 	return { provider, signer, account, account_balance_eth };
 }
