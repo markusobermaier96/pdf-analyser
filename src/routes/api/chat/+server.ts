@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	const controller = new ReadableStreamDefaultController();
 
 	// Create a chain
-	const chain = makeChain(ModelProvider.OPENAI,vectorStore, (token: string) => {
+	const chain = makeChain(ModelProvider.OPENAI, vectorStore, (token: string) => {
 		sendData(controller, token);
 	});
 
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, setHeaders }) => {
 	setHeaders({
 		'Cache-Control': 'no-cache',
 		'Content-Type': 'text/event-stream',
-		'Connection': 'keep-alive'
+		Connection: 'keep-alive'
 	});
 	return new Response(stream);
 };

@@ -4,8 +4,8 @@ import { ChatOpenAI } from 'langchain/chat_models/openai';
 import type { PineconeStore } from 'langchain/vectorstores';
 import { HuggingFaceInference } from 'langchain/llms/hf';
 import type { BaseLanguageModel } from 'langchain/dist/base_language';
-import { ConversationalRetrievalQAChain } from "langchain/chains";
-import { BaseCallbackHandler } from "langchain/callbacks";
+import { ConversationalRetrievalQAChain } from 'langchain/chains';
+import { BaseCallbackHandler } from 'langchain/callbacks';
 
 /* Question answering over documents consists of four steps:
 
@@ -47,20 +47,19 @@ Answer in Markdown:`
 export const makeChain = (
 	modelProvider: ModelProvider,
 	vectorstore: PineconeStore,
-	onTokenStream: (token: string) => void,
+	onTokenStream: (token: string) => void
 ) => {
-
 	const llmCb = BaseCallbackHandler.fromMethods({
 		handleLLMNewToken(token: string) {
 			console.log({ token });
 			onTokenStream(token);
 		},
 		handleLLMStart(llm, _prompts: string[]) {
-		  console.log("input tokens: ",  _prompts);
+			console.log('input tokens: ', _prompts);
 		},
-		handleLLMEnd(output, runId, parentRunId?) {
-			console.log("output tokens:  ", output.llmOutput);
-		},
+		handleLLMEnd(output) {
+			console.log('output tokens:  ', output.llmOutput);
+		}
 	});
 
 	let model: BaseLanguageModel;
@@ -71,7 +70,7 @@ export const makeChain = (
 			modelName: 'gpt-3.5-turbo',
 			maxRetries: 3,
 			streaming: true,
-			
+
 			/* callbacks: CallbackManager.fromHandlers({
 				async handleLLMNewToken(token) {
 					onTokenStream(token);
@@ -84,11 +83,11 @@ export const makeChain = (
 			model: 'gpt2',
 			apiKey: HF_ACCESS_TOKEN,
 			temperature: 1,
-			maxRetries: 3,
+			maxRetries: 3
 		});
 	}
 	return ConversationalRetrievalQAChain.fromLLM(model, vectorstore.asRetriever(2), {
-		returnSourceDocuments: true,
+		returnSourceDocuments: true
 		//questionGeneratorTemplate: CONDENSE_PROMPT.template,
 		//qaTemplate: QA_PROMPT.template,
 	});

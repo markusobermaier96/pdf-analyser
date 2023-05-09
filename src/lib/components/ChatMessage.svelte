@@ -2,7 +2,7 @@
 	//import MarkdownIt from 'markdown-it';
 	import { getMarkdownIt } from '@lib/utils/markdownit';
 	import type { ChatCompletionRequestMessageRoleEnum } from 'openai';
-	import { fly, fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 
 	export let role: ChatCompletionRequestMessageRoleEnum;
 	export let content: string;

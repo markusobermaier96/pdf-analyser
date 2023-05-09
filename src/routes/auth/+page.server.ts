@@ -3,7 +3,7 @@ import { error, redirect, type Actions } from '@sveltejs/kit';
 import crypto from 'crypto';
 
 export const actions: Actions = {
-	login: async ({ cookies, request }) => {
+	login: async ({ request }) => {
 		const userAddress = await request.formData().then((data) => {
 			return data.get('user') as string;
 		});
@@ -26,7 +26,7 @@ export const actions: Actions = {
 		let nonce;
 		if (!user) {
 			nonce = crypto.randomBytes(16).toString('hex');
-			let user_model = {
+			const user_model = {
 				publicAddress: userAddress,
 				nonce: nonce
 			};
@@ -45,14 +45,14 @@ export const actions: Actions = {
 			console.log('user already exists');
 		}
 		return {
-			nonce: nonce,
+			nonce: nonce
 		};
 	},
 
 	logout: async ({ cookies }) => {
 		cookies.delete('user');
 		cookies.delete('document');
-		
+
 		throw redirect(302, '/');
 	}
 };

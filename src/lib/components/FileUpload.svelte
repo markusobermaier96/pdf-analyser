@@ -35,9 +35,9 @@
 			return;
 		}
 
-		// TODO: Decide about transaction
-		/* try {
-			await sendTransaction(Currency.USD, estimatedCost, (await get(Item.Signer)) as JsonRpcSigner);
+		// TODO: Decide about transaction 0 for now, should be 'estimatedCost'
+		try {
+			await sendTransaction(Currency.USD, '0', (await get(Item.Signer)) as JsonRpcSigner);
 		} catch (err: any) {
 			if (err.code === 4001) {
 				toast.error('Transaction denied. Upload aborted.');
@@ -49,7 +49,7 @@
 			cancel();
 			return;
 		}
- */
+
 		data.append('publicAddress', publicAddress);
 
 		// start loading bar

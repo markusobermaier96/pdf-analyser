@@ -5,8 +5,6 @@ Uses GPT-3.5 and Pinecone to process large pdf.Gather information about the pdf-
 This repo is inspired by **[https://github.com/mayooear/gpt4-pdf-chatbot-langchain](https://github.com/sveltejs/kit)**
 
 ```bash
-# ingest pdf into pinecone by converting it into vectors
-just ingest
 # start development server
 just dev
 # build project

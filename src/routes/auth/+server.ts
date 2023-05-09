@@ -54,12 +54,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		{ expiresIn: '6h' }
 	);
 
-	let user: User = {
+	const user_model: User = {
 		publicAddress: updatedUser.publicAddress,
 		token: token
-	}
+	};
 
-	cookies.set('user', JSON.stringify(user), {
+	cookies.set('user', JSON.stringify(user_model), {
 		// sets the cookie to expire in 6 hours
 		expires: new Date(Date.now() + 6 * 60 * 60 * 1000),
 		path: '/'

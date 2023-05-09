@@ -12,7 +12,7 @@ declare global {
 	interface Window {
 		ethereum: MetaMaskInpageProvider;
 	}
-	var prisma: PrismaClient;
+	const prisma: PrismaClient;
 }
 
 export {};
