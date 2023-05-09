@@ -3,7 +3,7 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
-	import { isMetamaskInstalled } from '@lib/store/globalStore';
+	import { isMetamaskInstalled, selectedDocument } from '@lib/store/globalStore';
 	import { userToken, selectedIndex } from '@lib/store/userStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
 	import mechanicalClick from '@lib/assets/sounds/mechanical-click3.mp3';
@@ -98,6 +98,11 @@
 
 <Toaster />
 <div class="mx-auto flex flex-col gap-4">
+	{#if $selectedDocument}
+		<div class="flex self-center text-sm text-gray-500">
+			{$selectedDocument.title}
+		</div>
+	{/if}
 	<main class="main">
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">

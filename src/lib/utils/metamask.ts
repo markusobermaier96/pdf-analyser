@@ -32,16 +32,6 @@ async function initialize() {
 	let account_balance_wei = await provider.getBalance('ethers.eth');
 	let account_balance_eth = ethers.formatEther(account_balance_wei).slice(0, 5);
 
-	const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-
-	window.ethereum.on('chainChanged', handleChainChanged);
-
-	function handleChainChanged(chainId) {
-		// We recommend reloading the page, unless you must do otherwise.
-		console.log(`chain changed to ${chainId}`)
-		window.location.reload();
-	}
-
 	return { provider, signer, account, account_balance_eth };
 }
 
@@ -70,8 +60,6 @@ export function sendTransaction(currency: Currency, amount: string, signer: Json
 		case Currency.USD:
 			const usdToWei = ethers.parseEther("0.00054")
 			let costInWei = ethers.formatUnits(ethers.parseUnits(amount, 4) * usdToWei , 4)
-			console.log("costInWei ", costInWei);
-			console.log(ethers.parseUnits(costInWei, 0))
 			transactionParameters.value = ethers.parseUnits(costInWei, 0)
 			break;
 		case Currency.WEI:

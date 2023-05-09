@@ -26,8 +26,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 	// verify signature
 	if (ethers.verifyMessage(user!.nonce, signedMessage).toLowerCase() !== userAddress) {
+		console.log('Invalid signature');
 		return new Response('Invalid signature', { status: 401 });
 	}
+	console.log('Signature verified');
 
 	// update user
 	const updatedUser = await prisma.user.update({

@@ -7,6 +7,7 @@
 	import { Item, get } from '@lib/utils/metamask';
 	import type { JsonRpcSigner } from 'ethers';
 	import { writable } from 'svelte/store';
+	import { selectedDocument } from '@lib/store/globalStore';
 
 	let loading = writable(false);
 
@@ -35,15 +36,9 @@
 			return;
 		}
 
-		// start loading bar
-		loading.set(true);
-
-		/* let tx = await sendTransaction(
-			Currency.USD,
-			estimatedCost,
-			(await get(Item.Signer)) as JsonRpcSigner
-		).catch((err) => {
-			console.log(err.code);
+		/* try {
+			await sendTransaction(Currency.USD, estimatedCost, (await get(Item.Signer)) as JsonRpcSigner);
+		} catch (err: any) {
 			if (err.code === 4001) {
 				toast.error('Transaction denied. Upload aborted.');
 			}
@@ -53,14 +48,21 @@
 			}
 			cancel();
 			return;
-		}); */
-
+		}
+ */
 		data.append('publicAddress', publicAddress);
+
+		// start loading bar
+		loading.set(true);
 
 		return async ({ result, update }) => {
 			loading.set(false);
 			if (result.type == 'success') {
 				if (result.data) {
+					selectedDocument.set({
+						title: result.data.title,
+						index: result.data.hash
+					});
 					selectedIndex.set(result.data.hash);
 				}
 				toast.success('Successfully uploaded file');
@@ -83,7 +85,7 @@
 			{#if $loading}
 				<i class="fa-solid fa-spinner animate-spin ml-6" />
 			{:else}
-				<button class="border p-2 border-gray-300 bg-blue-400 rounded-lg" type="submit"
+				<button class="border p-2 ml-2 border-gray-300 bg-blue-400 rounded-lg" type="submit"
 					>Upload</button
 				>
 			{/if}

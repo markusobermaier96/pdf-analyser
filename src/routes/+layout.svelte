@@ -82,7 +82,6 @@
 {#if $user?.publicAddress}
 	<FileUpload publicAddress={$user.publicAddress} />
 {/if}
-<div>{$selectedIndex}</div>
 <div class="container w-[75vw] mx-auto flex flex-col space-y-4">
 	<header>
 		<div class="flex h-16 border-b border-b-slate-200 py-4">

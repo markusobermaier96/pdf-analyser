@@ -34,7 +34,6 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const publicAddress = data.get('publicAddress') as string;
 		const fileField = data.get('pdf') as File;
-
 		if (!fileField || !(fileField instanceof File)) {
 			throw error(500, {
 				message: 'Couldnt upload file: No proper format.'
@@ -132,6 +131,9 @@ export const actions: Actions = {
 		if (!cookies.get('hash')) {
 			cookies.set('hash', hash);
 		}
-		return { hash };
+		return {
+			hash: hash,
+			title: fileField.name
+		};
 	}
 };
