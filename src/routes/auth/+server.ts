@@ -65,5 +65,5 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		path: '/'
 	});
 
-	return new Response(JSON.stringify(user));
+	return new Response(JSON.stringify(user_model));
 };
