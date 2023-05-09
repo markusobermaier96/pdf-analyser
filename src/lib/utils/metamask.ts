@@ -26,23 +26,16 @@ async function initialize() {
 	account = await provider.send('eth_requestAccounts', []).then((res) => {
 		return res[0];
 	});
-	//account = accounts[0];
 
-	// listen to changes
-	/* provider.on('accountsChanged', function (accounts: any[]) {
-		account = accounts[0];
-	}); */
-	provider.on('network', (newNetwork, oldNetwork) => {
-		if (oldNetwork) {
-			console.log('changed');
-			window.location.reload();
-		}
-	});
-	let onNetworkChange: ethers.Subscriber = provider._getSubscriber({
-		type: 'network',
-		tag: "any"
-	})
-	onNetworkChange.start()
+	const chainId = await ethereum.request({ method: 'eth_chainId' });
+
+	window.ethereum.on('chainChanged', handleChainChanged);
+
+	function handleChainChanged(chainId) {
+	// We recommend reloading the page, unless you must do otherwise.
+	console.log(`chain changed to ${chainId})
+	window.location.reload();
+	}
 
 	signer = await provider.getSigner();
 
