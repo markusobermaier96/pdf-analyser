@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms';
-	import { selectedIndex } from '@lib/store/userStore';
 	import { Currency } from '@lib/utils/metamask';
 	import { sendTransaction } from '@lib/utils/metamask';
 	import toast from 'svelte-french-toast';
@@ -36,6 +35,7 @@
 			return;
 		}
 
+		// TODO: Decide about transaction
 		/* try {
 			await sendTransaction(Currency.USD, estimatedCost, (await get(Item.Signer)) as JsonRpcSigner);
 		} catch (err: any) {
@@ -63,7 +63,6 @@
 						title: result.data.title,
 						index: result.data.hash
 					});
-					selectedIndex.set(result.data.hash);
 				}
 				toast.success('Successfully uploaded file');
 				document.getElementById('modalClose')?.click();

@@ -5,7 +5,6 @@ const redisClient = createClient({
 	url: config.REDIS_URL
 });
 
-// TODO: use logging library...
 // eslint-disable-next-line no-console
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 

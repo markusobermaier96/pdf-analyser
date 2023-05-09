@@ -4,7 +4,7 @@
 	import { SSE } from 'sse.js';
 	import ChatMessage from '@lib/components/ChatMessage.svelte';
 	import { isMetamaskInstalled, selectedDocument } from '@lib/store/globalStore';
-	import { userToken, selectedIndex } from '@lib/store/userStore';
+	import { user } from '@lib/store/userStore';
 	import { appendMessage, messageStore } from '@lib/store/messageStore';
 	import mechanicalClick from '@lib/assets/sounds/mechanical-click3.mp3';
 
@@ -28,10 +28,10 @@
 	// handle form submission
 	const handleSubmit = async () => {
 		// first checks
-		if (!$userToken) {
+		if (!$user?.token) {
 			appendMessage('It seems that you are not logged in. Please do that first.', 'system');
 			// if user token is not set, set blocked to true to prevent more user input until the user has logged in
-			userToken.subscribe((value) => {
+			user.subscribe((value) => {
 				blocked.set(!value);
 			});
 			return;
@@ -39,7 +39,7 @@
 		blocked.set(false);
 
 		// check for selected index
-		if (!$selectedIndex) {
+		if (!$selectedDocument.index) {
 			toast.error(
 				'Please upload a pdf first or select a pdf from the list of available documents.'
 			);
@@ -67,7 +67,10 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			payload: JSON.stringify({ messages: $messageStore.messages, indexHash: $selectedIndex })
+			payload: JSON.stringify({
+				messages: $messageStore.messages,
+				indexHash: $selectedDocument.index
+			})
 		});
 		eventSource.addEventListener('error', handleError);
 		eventSource.addEventListener('message', (e) => {

@@ -4,8 +4,8 @@
 	import detectEthereumProvider from '@metamask/detect-provider';
 	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { ethereum, isMetamaskInstalled } from '@lib/store/globalStore';
-	import { userToken, user, selectedIndex } from '@lib/store/userStore';
+	import { ethereum, isMetamaskInstalled, selectedDocument } from '@lib/store/globalStore';
+	import { user } from '@lib/store/userStore';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import { Item, get } from '@lib/utils/metamask';
@@ -20,14 +20,12 @@
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
-		if (data.token) {
-			userToken.set(data.token);
-		}
+		console.log('refreshed page');
 		if (data.user) {
 			user.set(JSON.parse(data.user));
 		}
-		if (data.hash) {
-			selectedIndex.set(data.hash);
+		if (data.document) {
+			selectedDocument.set(JSON.parse(data.document));
 		}
 		await checkMetamaskInstalled().then(() => {
 			ethereum.set(window.ethereum);
@@ -45,12 +43,7 @@
 		}
 	];
 
-	async function signNonce() {
-		if (!data.nonce) {
-			console.log('no nonce data available');
-			return;
-		}
-		const nonce = data.nonce!;
+	async function signNonce(nonce: string) {
 		const userAddress = $ethereum?.selectedAddress;
 
 		let signer = (await get(Item.Signer)) as JsonRpcSigner;
@@ -65,10 +58,7 @@
 				userAddress,
 				signedMessage
 			})
-		}); /* .then(async (res) => {
-			const { updatedUser } = await res.json();
-			user.set(updatedUser);
-		}); */
+		}).then(async (res) => user.set(await res.json()));
 	}
 
 	async function checkMetamaskInstalled() {
@@ -103,10 +93,10 @@
 			<nav-right class="self-center flex justify-end w-full mr-4 space-x-12">
 				<label
 					for="file-upload"
-					class="btn {!($isMetamaskInstalled && $userToken) ? 'btn-disabled' : ''}"
+					class="btn {!($isMetamaskInstalled && $user?.token) ? 'btn-disabled' : ''}"
 					>Upload PDF</label
 				>
-				{#if $userToken}
+				{#if $user?.token}
 					<User />
 				{:else}
 					<form
@@ -122,26 +112,23 @@
 								.catch(() => {
 									event.cancel();
 								});
-							return async ({ update }) => {
-								await update();
+							return async ({ result }) => {
+								if (result.type == 'success') {
+									await signNonce(result.data?.nonce)
+										.then(() => {
+											toast.success('Logged in');
+										})
+										.catch((err) => {
+											if (err.reason == 'rejected') {
+												toast.error('Login request rejected');
+											} else {
+												toast.error('Unknown Error occured');
+											}
+										});
+								} else {
+									toast.error('Internal error occured');
+								}
 								metamaskPending.set(false);
-								await signNonce()
-									.then(() => toast.success('Logged in'))
-									.catch((err) => {
-										if (err.reason == 'rejected') {
-											toast.error('Login request rejected');
-										} else {
-											toast.error('Unknown Error occured');
-										}
-									});
-								await update();
-								if (data.token) {
-									userToken.set(data.token);
-									console.log('user token was set to: ' + data.token);
-								}
-								if (data.user) {
-									user.set(JSON.parse(data.user));
-								}
 							};
 						}}
 					>

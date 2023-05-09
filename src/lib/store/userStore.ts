@@ -2,11 +2,7 @@ import { writable } from 'svelte/store';
 
 interface User {
 	publicAddress: string;
-	nonce: string;
-	createdAt: string;
-	updatedAt: string;
+	token: string;
 }
 
 export const user = writable<User | null>(null);
-export const userToken = writable<string | null>(null);
-export const selectedIndex = writable<string | null>(null);

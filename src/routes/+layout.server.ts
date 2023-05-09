@@ -6,11 +6,11 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 	const token = cookies.get('token');
 	const user = cookies.get('user');
 	const metamaskAddress = cookies.get('metamask_address');
-	const hash = cookies.get('hash');
+	const document = cookies.get('document')
 
 	if (token) {
-		if (user && hash) {
-			return { token: token, user: user, hash: hash };
+		if (user && document) {
+			return { token: token, user: user, document: document };
 		} else if (user) {
 			return { token: token, user: user };
 		}

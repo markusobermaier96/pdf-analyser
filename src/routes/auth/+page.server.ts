@@ -1,5 +1,5 @@
 import { prisma } from '@lib/server/prisma';
-import { error, type Actions } from '@sveltejs/kit';
+import { error, redirect, type Actions } from '@sveltejs/kit';
 import crypto from 'crypto';
 
 export const actions: Actions = {
@@ -9,11 +9,6 @@ export const actions: Actions = {
 		});
 		if (!userAddress) {
 			throw error(500, 'No user data');
-		}
-
-		// set cookie
-		if (!cookies.get('metamask_address')) {
-			cookies.set('metamask_address', userAddress);
 		}
 
 		// retrieve user from db
@@ -50,13 +45,14 @@ export const actions: Actions = {
 			console.log('user already exists');
 		}
 		return {
-			nonce: nonce
+			nonce: nonce,
 		};
 	},
 
 	logout: async ({ cookies }) => {
-		if (cookies.get('token')) {
-			cookies.delete('token');
-		}
+		cookies.delete('user');
+		cookies.delete('document');
+		
+		throw redirect(302, '/');
 	}
 };

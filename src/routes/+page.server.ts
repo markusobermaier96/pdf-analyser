@@ -128,9 +128,12 @@ export const actions: Actions = {
 			throw error(500, 'Internal Server Error');
 		}
 
-		if (!cookies.get('hash')) {
-			cookies.set('hash', hash);
+		let document = {
+			hash: hash,
+			title: fileField.name
 		}
+		cookies.set('document', JSON.stringify(document))
+	
 		return {
 			hash: hash,
 			title: fileField.name
