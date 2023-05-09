@@ -20,7 +20,6 @@
 
 	let metamaskPending = writable(false);
 	onMount(async () => {
-		console.log('refreshed page');
 		if (data.user) {
 			user.set(JSON.parse(data.user));
 		}
