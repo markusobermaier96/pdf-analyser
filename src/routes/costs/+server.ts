@@ -3,6 +3,11 @@ import type { Document } from 'langchain/document';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
+const COST_EMBEDDINGS_PER_TOKEN = 0.0000004
+const COST_PINECONE_DAY = 0.111 * 24
+
+const REVENUE=0.01
+
 export const POST: RequestHandler = async ({ request }) => {
 	// get data
 	const data = await request.formData();
@@ -19,13 +24,22 @@ export const POST: RequestHandler = async ({ request }) => {
 			chunkOverlap: 0
 		});
 		chunks = await splitter.splitDocuments(docs);
-		const tokenSum = (chunks.length * 1000) / 4;
-		const estimatedCost = (tokenSum / 1000) * 0.0004;
-		console.log('chunks: ' + chunks.length);
-		console.log('sum of characters: ' + chunks.length * 1000);
-		console.log('tokenSum: ' + tokenSum);
-		console.log('estimatedCost: ' + estimatedCost);
-		return new Response(JSON.stringify(estimatedCost.toString()));
+		const estimatedTokenSum = ((chunks.length) * 1000) * 1.33;
+		console.log("estimated token sum: " + estimatedTokenSum)
+
+		//const estimatedCostEmbedding = Number(((estimatedTokenSum * COST_EMBEDDINGS_PER_TOKEN) + REVENUE).toFixed(2));
+		const estimatedCostEmbedding = Math.ceil(estimatedTokenSum * COST_EMBEDDINGS_PER_TOKEN * 100) / 100
+
+		// round up to 2 decimals
+		const estimatedCostPinecone = Math.ceil(COST_PINECONE_DAY * 100) / 100
+
+		const totalEstimatedCost = (estimatedCostEmbedding + estimatedCostPinecone).toFixed(2)
+
+		console.log('estimated cost embedding: ' + estimatedCostEmbedding);
+		console.log('estimated cost pinecone: ' + estimatedCostPinecone);
+		console.log('estimated cost total: ' + totalEstimatedCost);
+	
+		return new Response(totalEstimatedCost);
 	} catch (e) {
 		console.log(e);
 		throw error(500, 'Internal error occured');

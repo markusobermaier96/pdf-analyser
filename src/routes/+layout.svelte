@@ -149,6 +149,6 @@
 		<slot />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
-		<div>Powered by LangChainAI.</div>
+		<div>Powered by OpenAI GPT-3.5-turbo and Pinecone.</div>
 	</footer>
 </div>

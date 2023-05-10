@@ -63,14 +63,15 @@ export const actions: Actions = {
 
 			// Generate the SHA-256 hash value of the uploaded file
 			hash = await generateHashMaxLength(Buffer.from(buffer), MAX_HASH_LENGTH);
-
+			console.log('Hash: ', hash);
 			// 3,4. Create embeddings and write them to pinecone
 			if (!(await pinecone.listIndexes()).includes(hash)) {
 				await pinecone
 					.createIndex({
 						createRequest: {
 							name: hash,
-							dimension: 1536
+							dimension: 1536,
+							podType: "s1",
 						}
 					})
 					.catch(() => {
@@ -95,8 +96,9 @@ export const actions: Actions = {
 					{
 						pineconeIndex
 					}
-				).catch(() => {
+				).catch((err) => {
 					console.log('4. couldnt upload vectors');
+					console.log(err)
 					pinecone.deleteIndex({ indexName: hash });
 					throw error(500, 'Upload failed');
 				});

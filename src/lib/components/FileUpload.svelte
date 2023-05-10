@@ -35,20 +35,37 @@
 			return;
 		}
 
-		// TODO: Decide about transaction 0 for now, should be 'estimatedCost'
-		try {
-			await sendTransaction(Currency.USD, '0', (await get(Item.Signer)) as JsonRpcSigner);
+		/* try {
+			let tx = await sendTransaction(
+				Currency.USD,
+				estimatedCost,
+				(await get(Item.Signer)) as JsonRpcSigner
+			);
+			let receipt = await tx.wait();
+			console.log(receipt);
+			if (!receipt) {
+				throw Error;
+			}
 		} catch (err: any) {
-			if (err.code === 4001) {
-				toast.error('Transaction denied. Upload aborted.');
+			switch (err.code) {
+				case 'INVALID_ARGUMENT':
+					toast.error('Invalid argument.');
+					cancel();
+					return;
+				case 'ACTION_REJECTED':
+					toast.error('Transaction denied. Upload aborted.');
+					cancel();
+					return;
+				case 'INSUFFICIENT_FUNDS':
+					toast.error('Insufficient balance in your Metamask Wallet');
+					cancel();
+					return;
+				default:
+					toast.error('Error: ', err.code);
+					cancel();
+					return;
 			}
-			console.log(err.code);
-			if (err.code === 'INSUFFICIENT_FUNDS') {
-				toast.error('Insufficient balance in your Metamask Wallet');
-			}
-			cancel();
-			return;
-		}
+		} */
 
 		data.append('publicAddress', publicAddress);
 
