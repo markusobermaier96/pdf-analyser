@@ -169,7 +169,7 @@
 
 <!-- ------------------------------ -->
 <svelte:head>
-	<title>Home • PDF Analyser</title>
+	<title>Chat • PDF Analyser</title>
 </svelte:head>
 
 <style>

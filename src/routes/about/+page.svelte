@@ -1,18 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import Youtube from 'svelte-youtube-embed';
-
-	let mounted = false;
-
-	onMount(() => (mounted = true));
 </script>
 
 <div class="text-xl lg:w-1/2 self-center mt-8 p-5">
-	{#if mounted}
-		<div>
-			<Youtube id="YVgfHZMFFFQ" />
-		</div>
-	{/if}
+	<div>
+		<Youtube id="YVgfHZMFFFQ" />
+	</div>
 
 	<div class="my-6">
 		<div class="outer">
@@ -45,12 +38,12 @@
 
 <style lang="postcss">
 	.title {
-		@apply flex justify-center bg-gray-300 font-bold p-2;
+		@apply flex justify-center bg-gray-200 font-bold p-2 text-gray-600;
 	}
 	.outer {
-		@apply flex flex-col justify-center border border-black rounded shadow-lg;
+		@apply flex flex-col justify-center border border-gray-300 shadow-lg;
 	}
 	.inner {
-		@apply space-y-2 p-10 list-disc;
+		@apply space-y-2 p-10 list-disc text-gray-800;
 	}
 </style>

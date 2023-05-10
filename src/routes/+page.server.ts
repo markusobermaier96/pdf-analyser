@@ -71,7 +71,7 @@ export const actions: Actions = {
 						createRequest: {
 							name: hash,
 							dimension: 1536,
-							podType: "s1",
+							podType: 's1'
 						}
 					})
 					.catch(() => {
@@ -98,7 +98,7 @@ export const actions: Actions = {
 					}
 				).catch((err) => {
 					console.log('4. couldnt upload vectors');
-					console.log(err)
+					console.log(err);
 					pinecone.deleteIndex({ indexName: hash });
 					throw error(500, 'Upload failed');
 				});
