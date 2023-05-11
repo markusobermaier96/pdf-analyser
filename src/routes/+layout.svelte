@@ -13,6 +13,7 @@
 	import User from '@lib/components/User.svelte';
 	import toast from 'svelte-french-toast';
 	import type { Config } from '@sveltejs/adapter-vercel';
+	import { page } from '$app/stores';
 
 	export const config: Config = {
 		runtime: 'nodejs18.x'
@@ -82,7 +83,12 @@
 				<ul class="flex space-x-4">
 					{#each navigation as item}
 						<li>
-							<a href={item.href} class="hover:text-slate-600 cursor-pointer">
+							<a
+								href={item.href}
+								class={`hover:text-slate-600 cursor-pointer ${
+									$page.url.pathname === item.href ? 'border-b border-gray-700 pb-5' : ''
+								}`}
+							>
 								{item.name}
 							</a>
 						</li>
