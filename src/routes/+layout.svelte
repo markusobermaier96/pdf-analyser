@@ -85,9 +85,9 @@
 						<li>
 							<a
 								href={item.href}
-								class={`hover:text-slate-600 cursor-pointer ${
-									$page.url.pathname === item.href ? 'border-b border-gray-700 pb-5' : ''
-								}`}
+								class="hover:text-slate-600 cursor-pointer {$page.url.pathname === item.href
+									? 'border-b border-gray-700 pb-5'
+									: ''}"
 							>
 								{item.name}
 							</a>
