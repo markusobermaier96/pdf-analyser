@@ -80,13 +80,14 @@
 	<header>
 		<div class="flex h-16 border-b border-b-slate-200 py-4">
 			<nav-left class="ml-4 flex self-center">
-				<ul class="flex space-x-4">
+				<ul class="flex">
 					{#each navigation as item}
 						<li>
 							<a
 								href={item.href}
-								class="hover:text-slate-600 cursor-pointer {$page.url.pathname === item.href
-									? 'border-b border-gray-700 pb-5'
+								class="hover:text-gray-700 text-gray-400 cursor-pointer p-5 {$page.url.pathname ===
+								item.href
+									? 'border-b border-gray-400 text-gray-800'
 									: ''}"
 							>
 								{item.name}
@@ -159,6 +160,6 @@
 		<slot />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
-		<div>Powered by OpenAI GPT-3.5-turbo and Pinecone.</div>
+		<div>Powered by OpenAI, Pinecone and the <i class="fa-brands fa-ethereum" /> Blockchain.</div>
 	</footer>
 </div>
