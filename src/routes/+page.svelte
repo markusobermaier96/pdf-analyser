@@ -110,17 +110,18 @@
 		<!-- Cloud -->
 		<div class="flex w-[75vw] h-[65vh] border rounded-lg justify-center text-center">
 			<div class="w-full h-full overflow-y-scroll rounded-lg shadow-md">
-				{#if !$isMetamaskInstalled}
+				{#if $isMetamaskInstalled}
+					{#each $messageStore.messages as { role, content }, i}
+						<ChatMessage {role} {content} />
+					{/each}
+					{#if $messageStore.pending}
+						<ChatMessage role="assistant" content={$messageStore.pending} />
+					{/if}
+				{:else}
 					<ChatMessage
 						role="assistant"
-						content="I cant find Metamask in your browser. To use this application, you need to install [Metamask](https://metamask.io/) first!"
+						content="This application requires JavaScript and Metamask. To use this application, make sure JavaScript is enabled in your browser and install [Metamask](https://metamask.io/)!"
 					/>
-				{/if}
-				{#each $messageStore.messages as { role, content }, i}
-					<ChatMessage {role} {content} />
-				{/each}
-				{#if $messageStore.pending}
-					<ChatMessage role="assistant" content={$messageStore.pending} />
 				{/if}
 				<div class="" bind:this={scrollToDiv} />
 			</div>

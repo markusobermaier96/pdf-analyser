@@ -160,6 +160,8 @@
 		<slot />
 	</main>
 	<footer class="m-auto p-4 text-gray-400">
-		<div>Powered by OpenAI, Pinecone and the <i class="fa-brands fa-ethereum" /> Blockchain.</div>
+		<div>
+			Powered by OpenAI, Pinecone and the <i class="fa-brands fa-ethereum" aria-hidden="true" /> Blockchain.
+		</div>
 	</footer>
 </div>

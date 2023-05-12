@@ -13,7 +13,6 @@
 	'system'
 		? 'bg-orange-200 shadow-none'
 		: ''}"
-	transition:fade={{ delay: 1 }}
 >
 	{#if role === 'user'}
 		<svg
