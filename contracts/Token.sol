@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 contract Token is ERC20Capped, ERC20Burnable {
@@ -9,7 +9,7 @@ contract Token is ERC20Capped, ERC20Burnable {
     modifier onlyOwner() {
         require(msg.sender == owner, 'Only the owner can call this function');
         _;
-    }
+    } 
 
     constructor(uint256 cap, uint256 reward) ERC20('PdfAnalyserToken', 'PDF') ERC20Capped(cap * (10 ** decimals())) {
         owner = payable(msg.sender);

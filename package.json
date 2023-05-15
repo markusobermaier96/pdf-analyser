@@ -47,6 +47,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@chainlink/contracts": "^0.6.1",
 		"@ethersproject/bignumber": "^5.7.0",
 		"@huggingface/hub": "^0.3.3",
 		"@huggingface/inference": "^1.6.2",
