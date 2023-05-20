@@ -14,7 +14,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"compile": "npx solcjs --bin --abi --include-path node_modules/ --base-path contracts/ -o contracts/artifacts/ ./contracts/Storage.sol"
 	},
 	"devDependencies": {
 		"@metamask/providers": "^10.2.1",
