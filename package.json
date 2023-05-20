@@ -31,7 +31,6 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
-		"hardhat": "^2.14.0",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
@@ -66,7 +65,7 @@
 		"markdown-it": "^13.0.1",
 		"openai": "^3.2.1",
 		"pdf-parse": "^1.1.1",
-		"redis": "^4.6.5",
+		"solc": "^0.8.20",
 		"sse.js": "^0.6.1",
 		"svelte-french-toast": "1.0.4-beta.0",
 		"zod": "^3.21.4"
