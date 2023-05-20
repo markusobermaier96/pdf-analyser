@@ -1,8 +1,6 @@
 //const hre = require('hardhat');
-
-async function main() {
-    
-}
+// TODO
+async function main() {}
 
 main()
 	.then(() => process.exit(0))
