@@ -10,6 +10,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"target": "ES2020", // or higher
+		"declarationMap": true,
     	"module": "nodenext",
 
 		"baseUrl": "./src",
