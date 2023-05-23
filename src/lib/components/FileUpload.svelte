@@ -11,13 +11,8 @@
 	let loading = writable(false);
 
 	const handleSubmit: SubmitFunction = async ({ data, cancel }) => {
-		if (
-			!(
-				data.has('pdf') &&
-				data.get('pdf')?.size !== 0 &&
-				data.get('pdf')?.type === 'application/pdf'
-			)
-		) {
+		let pdfFile: File = data.get('pdf') as File;
+		if (pdfFile.size === 0 || pdfFile.type !== "application/pdf") {
 			toast.error('Please choose a pdf file.');
 			cancel();
 			return;

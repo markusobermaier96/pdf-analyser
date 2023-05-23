@@ -9,15 +9,21 @@ error ValueMismatch();
 contract Funding {
     using PriceConverter for uint256;
 
-    enum RewardType { SELF, HOST }
+    enum RewardType {
+        SELF,
+        HOST
+    }
     uint256 public selfReward = 600_000_000_000_000;
     uint256 public hostReward = 600_000_000_000_000;
 
-    function fund(address payable _to, uint256 value) public payable returns (uint256) {
+    function fund(
+        address payable _to,
+        uint256 value
+    ) public payable returns (uint256) {
         if (value != hostReward) {
             revert ValueMismatch();
         }
-        (bool sent,) = _to.call{value: msg.value}("");
+        (bool sent, ) = _to.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
         return hostReward;
     }
@@ -27,7 +33,7 @@ contract Funding {
             hostReward = weiAmount;
         } else if (rewardType == RewardType.SELF) {
             selfReward = weiAmount;
-        } 
+        }
     }
 
     receive() external payable {
