@@ -12,7 +12,7 @@
 		"target": "ES2020", // or higher
 		"declarationMap": true,
 		"declaration": true,
-    	"module": "nodenext",
+    "module": "nodenext",
 
 		"baseUrl": "./src",
 		"paths": {
