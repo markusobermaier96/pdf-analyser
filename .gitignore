@@ -17,3 +17,6 @@ docker-data
 /playwright-report/
 /playwright/.cache/
 .vercel
+
+# solidity
+contracts/artifacts
